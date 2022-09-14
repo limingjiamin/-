@@ -1,5 +1,3 @@
 <template>
-    <div>
-        双伶
-    </div>
+  <div>双伶</div>
 </template>
