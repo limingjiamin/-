@@ -3,7 +3,7 @@ var router = express.Router();
 const mysql = require("../mysql/marketing.js");
 
 
-// 获取所有的秒杀活动表格数据
+// 秒杀活动表格数据
 router.post("/seckill", async (req, res) => {
   let data = await mysql.seckill("seckill",req.body);
   if(data.length==0){
@@ -18,10 +18,6 @@ router.post("/seckill", async (req, res) => {
     });
   }
 });
-
-
-
-
 
 
 module.exports = router;
