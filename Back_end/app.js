@@ -7,6 +7,7 @@ const bodyparser = require("body-parser");
 //添加路由地址
 var indexRouter = require("./routes/index");
 var homeRouter = require("./routes/home");
+var marketRouter = require("./routes/marketing")
 
 
 var app = express();
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 //使用路由器
 app.use("/", indexRouter); //公共的请求
 app.use("/home", homeRouter); //首页请求
+app.use("/market", marketRouter); //营销请求
 
 
 module.exports = app;
