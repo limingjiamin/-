@@ -3,8 +3,8 @@ var router = express.Router();
 const mysql = require("../mysql/order.js");
 
 //订单表格数据
-router.post("/order_list", async (req, res) => {
-  let data = await mysql.list("order_list", req.body);
+router.get("/order_list", async (req, res) => {
+  let data = await mysql.list("order_list", req.query);
   if (data.length == 0) {
     res.json({
       code: 400,
@@ -79,5 +79,145 @@ router.post("/deliver_goods_edit", async (req,res)=>{
     });
   }
 } 
+})
+
+//订单设置
+router.post("/order_setting",async (req,res)=>{
+  let data= await mysql.order_set("order_setting",req.body);
+  if(typeof data=="string"){
+    res.json({
+      code: 400,
+      data: data,
+    });
+  }else{
+  if (data.affectedRows > 0) {
+    res.json({
+      code: 200,
+      data: "设置成功",
+    });
+  } else {
+    res.json({
+      code: 400,
+      data: `设置失败`,
+    });
+  }
+} 
+})
+
+//退货表格
+router.get("/return_application", async (req, res) => {
+  let data = await mysql.list("return_application", req.query);
+  if (data.length == 0) {
+    res.json({
+      code: 400,
+      data: "数据库没有这么多的数据",
+    });
+  } else {
+    res.json({
+      code: 200,
+      data: data,
+    });
+  }
+});
+
+//退货详情
+router.get("/return_application_details",async (req,res)=>{
+  let data=await mysql.application("return_application", req.query);
+  if (typeof data=="string") {
+    res.json({
+      code: 400,
+      data: "数据库该条id的数据",
+    });
+  } else {
+    res.json({
+      code: 200,
+      data: data,
+    });
+  }
+})
+
+//退货原因设置表格
+router.get("/return_reason", async (req, res) => {
+  let data = await mysql.list("return_reason", req.query);
+  if (data.length == 0) {
+    res.json({
+      code: 400,
+      data: "数据库没有这么多的数据",
+    });
+  } else {
+    res.json({
+      code: 200,
+      data: data,
+    });
+  }
+});
+
+//退货原因编辑
+router.post("/return_reason_edit",async(req,res)=>{
+  let data = await mysql.reason_edit("return_reason", req.body);
+  if(typeof data=="string"){
+    res.json({
+      code: 400,
+      data: data,
+    });
+  }else{
+  if (data.affectedRows > 0) {
+    res.json({
+      code: 200,
+      data: "设置成功",
+    });
+  } else {
+    res.json({
+      code: 400,
+      data: `设置失败`,
+    });
+  }
+} 
+})
+
+//退货原因删除
+router.get("/return_reason_delete",async(req,res)=>{
+let data= await mysql.reason_delete("return_reason",req.query);
+if(typeof data=="string"){
+  res.json({
+    code: 400,
+    data: data,
+  });
+}else{
+if (data.affectedRows > 0) {
+  res.json({
+    code: 200,
+    data: "删除成功",
+  });
+} else {
+  res.json({
+    code: 400,
+    data: `删除失败`,
+  });
+}
+} 
+})     
+
+// 添加退货原因              
+router.post("/return_reason_add",async(req,res)=>{
+  let data=await mysql.reason_add("return_reason",req.body);
+  if(typeof data=="string"){
+    res.json({
+      code: 400,
+      data: data,
+    });
+  }else{
+  if (data.affectedRows > 0) {
+    res.json({
+      code: 200,
+      data: "插入成功",
+    });
+  } else {
+    res.json({
+      code: 400,
+      data: `插入失败`,
+    });
+  }
+  } 
 })
 module.exports = router;
