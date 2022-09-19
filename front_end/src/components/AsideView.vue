@@ -1,18 +1,19 @@
 <template>
   <el-row class="tac">
     <el-col>
+      <!--      :collapse="isCollapse"-->
       <el-menu
-        background-color="#545c64"
+        background-color="#304156"
         class="el-menu-vertical-demo"
         default-active="/home"
-        text-color="#fff"
+        text-color="rgb(191, 203, 217)"
         @open="handleOpen"
         @close="handleClose"
         router
       >
         <el-menu-item index="/home">
+          <el-icon><HomeFilled /></el-icon>
           <template #title>
-            <el-icon><HomeFilled /></el-icon>
             <span>首页</span>
           </template>
         </el-menu-item>
@@ -22,32 +23,32 @@
             <span>商品</span>
           </template>
           <el-menu-item index="/commodity/goods-list">
+            <el-icon><Menu /></el-icon>
             <template #title>
-              <el-icon><Menu /></el-icon>
               <span>商品列表</span>
             </template>
           </el-menu-item>
           <el-menu-item index="/commodity/add-goods">
+            <el-icon><DocumentAdd /></el-icon>
             <template #title>
-              <el-icon><DocumentAdd /></el-icon>
               <span>添加商品</span>
             </template>
           </el-menu-item>
           <el-menu-item index="/commodity/goods-categories">
+            <el-icon><Grid /></el-icon>
             <template #title>
-              <el-icon><Grid /></el-icon>
               <span>商品分类</span>
             </template>
           </el-menu-item>
           <el-menu-item index="/commodity/product-types">
+            <el-icon><Tickets /></el-icon>
             <template #title>
-              <el-icon><Tickets /></el-icon>
               <span>商品类型</span>
             </template>
           </el-menu-item>
           <el-menu-item index="/commodity/brand-management">
+            <el-icon><PriceTag /></el-icon>
             <template #title>
-              <el-icon><PriceTag /></el-icon>
               <span>品牌管理</span>
             </template>
           </el-menu-item>
@@ -58,26 +59,26 @@
             <span>订单</span>
           </template>
           <el-menu-item index="/order/order-list">
+            <el-icon><Menu /></el-icon>
             <template #title>
-              <el-icon><Menu /></el-icon>
               <span>订单列表</span>
             </template>
           </el-menu-item>
           <el-menu-item index="/order/order-settings">
+            <el-icon><setting /></el-icon>
             <template #title>
-              <el-icon><setting /></el-icon>
               <span>订单设置</span>
             </template>
           </el-menu-item>
           <el-menu-item index="/order/return-application">
+            <el-icon><SoldOut /></el-icon>
             <template #title>
-              <el-icon><SoldOut /></el-icon>
               <span>退货申请处理</span>
             </template>
           </el-menu-item>
           <el-menu-item index="/order/return-reason">
+            <el-icon><TakeawayBox /></el-icon>
             <template #title>
-              <el-icon><TakeawayBox /></el-icon>
               <span>退货原因设置</span>
             </template>
           </el-menu-item>
@@ -166,25 +167,8 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  HomeFilled,
-  Goods,
-  PriceTag,
-  Histogram,
-  SoldOut,
-  TakeawayBox,
-  Ticket,
-  AlarmClock,
-  Opportunity,
-  Menu,
-  TrophyBase,
-  HelpFilled,
-  UserFilled,
-  Setting,
-  Key,
-  DataAnalysis,
-  ReadingLamp,
-} from "@element-plus/icons-vue";
+import { ref } from "vue";
+const isCollapse = ref(true);
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };
