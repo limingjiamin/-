@@ -4,16 +4,25 @@ let sql = "";
 //创建查询语句
 class order {
   constructor() {}
+  count(table){
+    sql=`select count(1) a from ${table}`
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   //订单列表数据
   list(table, parameter) {
     let count =
-      parameter.pag_count == undefined || parameter.pag_count == ""
-        ? 10
-        : parameter.pag_count;
-    let state =
-      parameter.pag_num == undefined || parameter.pag_num == ""
-        ? 0
-        : (parameter.pag_num - 1) * count;
+    parameter.page_size == undefined || parameter.page_size == ""
+      ? 5
+      : parameter.page_size;
+  let state =
+    parameter.page_num == undefined || parameter.page_num == ""
+      ? 0
+      : (parameter.page_num - 1) * parameter.page_size;
     sql = `select * from ${table} limit ${state},${count}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {

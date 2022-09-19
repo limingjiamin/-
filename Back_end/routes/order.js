@@ -5,6 +5,7 @@ const mysql = require("../mysql/order.js");
 //订单表格数据
 router.get("/order_list", async (req, res) => {
   let data = await mysql.list("order_list", req.query);
+  let count= await mysql.count("order_list");
   if (data.length == 0) {
     res.json({
       code: 400,
@@ -13,6 +14,7 @@ router.get("/order_list", async (req, res) => {
   } else {
     res.json({
       code: 200,
+      count:count[0].a,
       data: data,
     });
   }
@@ -107,6 +109,7 @@ router.post("/order_setting",async (req,res)=>{
 //退货表格
 router.get("/return_application", async (req, res) => {
   let data = await mysql.list("return_application", req.query);
+  let count= await mysql.count("return_application");
   if (data.length == 0) {
     res.json({
       code: 400,
@@ -115,6 +118,7 @@ router.get("/return_application", async (req, res) => {
   } else {
     res.json({
       code: 200,
+      count:count[0].a,
       data: data,
     });
   }
@@ -139,6 +143,7 @@ router.get("/return_application_details",async (req,res)=>{
 //退货原因设置表格
 router.get("/return_reason", async (req, res) => {
   let data = await mysql.list("return_reason", req.query);
+  let count= await mysql.count("return_reason");
   if (data.length == 0) {
     res.json({
       code: 400,
@@ -147,6 +152,7 @@ router.get("/return_reason", async (req, res) => {
   } else {
     res.json({
       code: 200,
+      count:count[0].a,
       data: data,
     });
   }
