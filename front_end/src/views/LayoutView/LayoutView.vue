@@ -50,10 +50,6 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  //width: 200px;
-  min-height: 400px;
-}
 .fold-menu {
   font-size: 24px;
 }
