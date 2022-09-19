@@ -1,7 +1,6 @@
 <template>
   <el-row class="tac">
     <el-col>
-      <!--      :collapse="isCollapse"-->
       <el-menu
         background-color="#304156"
         class="el-menu-vertical-demo"
@@ -167,8 +166,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-const isCollapse = ref(true);
+// import { ref } from "vue";
+// const isCollapse = ref(true);
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };

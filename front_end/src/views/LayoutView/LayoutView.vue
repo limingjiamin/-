@@ -1,25 +1,12 @@
 <template>
   <div class="common-layout">
-    <el-container class="aside-part">
-      <el-aside><AsideView></AsideView></el-aside>
+    <el-container>
+      <el-aside>
+        <AsideView />
+      </el-aside>
       <el-container>
-        <el-header class="top-header">
-          <!--          面包屑-->
-          <div class="fold-menu">
-            <el-icon><Expand /></el-icon>
-          </div>
-          <!--          用户信息-->
-          <div class="toolbar">
-            <el-dropdown>
-              <el-avatar :icon="UserFilled" />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>首页</el-dropdown-item>
-                  <el-dropdown-item>退出</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </div>
+        <el-header>
+          <HeaderView />
         </el-header>
         <el-main>
           <router-view />
@@ -31,11 +18,13 @@
 
 <script>
 import AsideView from "@/components/AsideView";
+import HeaderView from "@/components/HeaderView";
 
 export default {
   name: "LayoutView",
   components: {
     AsideView,
+    HeaderView,
   },
 };
 </script>
@@ -44,13 +33,8 @@ export default {
   border: 1px solid #e6e6e6;
   border-left: none;
   border-right: none;
-}
-.top-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-.fold-menu {
-  font-size: 24px;
 }
 </style>
