@@ -227,7 +227,6 @@ export default {
   watch: {
     page: {
       handler: function () {
-        console.log(this.page);
         this.http(this.page);
       },
       deep: true,
