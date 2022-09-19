@@ -139,6 +139,13 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/MarketingView/SpecialRecommend.vue"),
         meta: { isAuth: true, title: "专题推荐" },
       },
+      {
+        path: "spike-time/:id",
+        name: "spike-time",
+        props: true,
+        component: () => import("@/views/MarketingView/SpikeTime.vue"),
+        meta: { isAuth: true, title: "秒杀时间" },
+      },
     ],
   },
   {
