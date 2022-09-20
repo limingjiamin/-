@@ -23,7 +23,7 @@ class order {
     parameter.page_num == undefined || parameter.page_num == ""
       ? 0
       : (parameter.page_num - 1) * parameter.page_size;
-    sql = `select * from ${table} limit ${state},${count}`;
+    sql = `select * from ${table} left join consumer on consumer_id=c_id limit ${state},${count}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
