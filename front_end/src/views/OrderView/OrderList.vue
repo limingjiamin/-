@@ -1,5 +1,4 @@
 <template>
-  <span>{{tableData}}</span>
   <el-table
       ref="multipleTableRef"
       :data="tableData"
@@ -33,7 +32,7 @@
 
 <script lang="ts" setup>
 import axios from 'axios/index'
-import { ref,onMounted ,onBeforeMount} from 'vue'
+import { Ref,ref,reactive,onMounted ,onBeforeMount} from 'vue'
 import { ElTable } from 'element-plus'
 interface Order{
   id: number,
@@ -73,34 +72,9 @@ const multipleSelection = ref<Order[]>([])
 const handleSelectionChange = (val: Order[]) => {
   multipleSelection.value = val
 }
-// let tableData: Order[]=[{
-//   "id": 1,
-//   "order_num": "20222380951031",
-//   "commite_time": "2022-08-27T00:11:16.000Z",
-//   "price": 231.75,
-//   "way": "未支付",
-//   "source": "APP订单",
-//   "type": "秒杀订单",
-//   "status": "已关闭",
-//   "delivery": "暂无",
-//   "logistics": "暂无",
-//   "growth_value": 185,
-//   "currency": 305,
-//   "freight": 14.9,
-//   "remarks": "红色",
-//   "consumer_id": "8",
-//   "goods_id": 4,
-//   "c_id": "8",
-//   "account": "wrRklJ",
-//   "password": "NUdvnT",
-//   "phone": "2081944374",
-//   "postal_code": "650792",
-//   "address": "中国广州市白云区小坪东路835号8栋",
-//   "name": "方璐",
-//   "integral": 463
-// }]
+const tableData: Ref<Order[]> = ref([])
 //通过组合式api的形式使用api
-onMounted(  ()=>{
+onBeforeMount(  ()=>{
   axios({
     url:'http://localhost:3000/order/order_list',
     method:'get',
@@ -112,8 +86,8 @@ onMounted(  ()=>{
     }
   }).then(({data})=>{
     if(data.code===0){
-      // let tableData=data.data
-      let tableData: Order[]=data.data
+      tableData.value=data.data
+      // let tableData: Order[]=data.data
       console.log(data.data)
       console.log("----------------------")
       console.log(tableData)
