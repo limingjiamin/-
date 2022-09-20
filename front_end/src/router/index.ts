@@ -146,6 +146,24 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/MarketingView/SpikeTime.vue"),
         meta: { isAuth: true, title: "秒杀时间" },
       },
+      {
+        path: "coupon-history",
+        name: "coupon-history",
+        component: () => import("@/views/MarketingView/CouponHistory.vue"),
+        meta: { isAuth: true, title: "优惠券详情" },
+      },
+      {
+        path: "coupon-update",
+        name: "coupon-update",
+        component: () => import("@/views/MarketingView/CouponUpdate.vue"),
+        meta: { isAuth: true, title: "优惠券修改" },
+      },
+      {
+        path: "advertis-update",
+        name: "advertis-update",
+        component: () => import("@/views/MarketingView/AdvertisingEdit.vue"),
+        meta: { isAuth: true, title: "广告修改" },
+      },
     ],
   },
   {

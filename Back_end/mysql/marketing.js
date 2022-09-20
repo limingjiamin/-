@@ -37,8 +37,21 @@ class marketing {
     let { id, upper_line } = param;
     if (id == undefined || id == "") return "请输入正确的id号";
     if (upper_line == undefined || upper_line == "") return "请输入正确的状态";
-    upper_line = upper_line ? 1 : 0;
+    upper_line = upper_line=="true" ? 1 : 0;
     sql = `update ${table} set upper_line='${upper_line}' where id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  upper(table, param) {
+    let { id, upper } = param;
+    if (id == undefined || id == "") return "请输入正确的id号";
+    if (upper == undefined || upper == "") return "请输入正确的状态";
+    upper = upper=="true" ? 1 : 0;
+    sql = `update ${table} set ad_upper='${upper}' where ad_id=${id}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
@@ -71,6 +84,30 @@ class marketing {
     let { id } = param;
     if (id == undefined || id == "") return "请输入订单id";
     sql = `delete from ${table} where id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+
+  coupon_delete(table, param) {
+    let { cou_id } = param;
+    if (cou_id == undefined || cou_id == "") return "请输入订单id";
+    sql = `delete from ${table} where  cou_id=${cou_id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+
+  advertis_delete(table, param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入订单id";
+    sql = `delete from ${table} where  ad_id=${id}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
