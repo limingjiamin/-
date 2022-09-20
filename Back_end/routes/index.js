@@ -2,7 +2,6 @@ var express = require("express");
 var router = express.Router();
 const mysql = require("../mysql/select.js");
 
-
 //导航栏请求
 router.get("/navigation", async (req, res) => {
   let data = await mysql.navigation("nav");
@@ -36,5 +35,10 @@ router.post("/batch", async (req, res) => {
     });
   }
 });
+
+// 批量删除
+router.post("/batch_delete",async(req,res)=>{
+
+})
 
 module.exports = router;

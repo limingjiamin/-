@@ -14,9 +14,16 @@ class select {
       });
     });
   }
-  
-   //批量操作
-   batch(table, parameter) {
+  route(param) {
+    let { address } = param;
+    let table = "";
+    switch (address) {
+      case "advertising-list":table="advertis"; break;
+    }
+    return table;
+  }
+  //批量操作
+  batch(table, parameter) {
     let { addrss } = parameter;
     if (
       addrss == "new-product-recommend" ||
@@ -33,7 +40,12 @@ class select {
       });
     });
   }
-
+  // 批量数据删除
+  batch_delete(param) {
+    let table=this.route(param);
+    sql= `delete from ${table} where ${id} in ()`; 
+    let sql2=`update ${table} SET myfield = 'value' WHERE ${id} in ('other_values');`
+  }
 }
 
 module.exports = new select();

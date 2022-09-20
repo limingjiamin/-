@@ -16,7 +16,7 @@
           <el-table-column prop="cou_states" label="状态" align="center" width="80" />
           <el-table-column label="操作" align="center" width="240">
             <template #default="scope">
-              <el-button size="small" plain @click="setup(scope.row)">查看</el-button>
+              <el-button size="small" plain @click="examine(scope.row)">查看</el-button>
               <el-button size="small" type="primary" plain @click="edit(scope.row)">编辑</el-button>
               <el-button size="small" type="danger" plain @click="delect(scope.row)">删除</el-button>
             </template>
@@ -64,7 +64,7 @@
     },
     methods: {
       http(param) {
-        $http("/market/coupon", param,).then((data) => {
+        $http("/market/coupon", param).then((data) => {
           data.data.forEach((elem) => {
             if (elem.cou_states == "0") {
               elem.cou_states = "已过期";
@@ -80,21 +80,38 @@
           this.page.page_count = data.count;
         });
       },
-      edit(pay) {
+      examine(pay) {
         // 跳转到其他界面
+        this.$router.push({
+          path:"coupon-history",
+          query:{
+            id:pay.cou_id
+          }
+        });
       },
       delect(pay) {
         // 1.弹出确定对话框，提示用户
         this.dialog = true;
-        this.del_id = pay.id;
+        this.del_id = pay.cou_id;
       },
       del() {
         this.dialog = false;
         //发起ajax请求删除数据
+        $http("/market/coupon_delete",{cou_id:this.del_id}).then(data=>{
+          if (data.code != 400) {
+          this.http();
+        }
+        })
       },
-      setup(pay) {
+      edit(pay) {
         // 跳转到其他界面
-        this.$router.push(`spike-time/${pay.id}`);
+        let canshu=JSON.parse(JSON.stringify(pay));
+        this.$router.push({
+          path:"coupon-update",
+          query :{
+            comm:canshu
+          }
+        });
       },
     },
     watch: {
