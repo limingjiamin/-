@@ -46,7 +46,7 @@
         </el-dialog>
       </el-main>
       <el-footer class="pag_wei">
-        <batch/>
+        <batch />
         <pag />
       </el-footer>
     </el-container>
@@ -59,7 +59,7 @@
   import batch from "@/components/BatchView.vue";
   export default {
     name: "AdvertisingList",
-    components: { pag ,batch},
+    components: { pag, batch },
     created() {
       this.page = this.$store.state.page;
       this.batch = this.$store.state.batch;
@@ -73,7 +73,7 @@
         dialog: false,
         dia_from: {},
         del_id: 0,
-        batch:{}
+        batch: {}
       };
     },
     methods: {
@@ -115,18 +115,20 @@
           }
         })
       },
-      edit(pay){
+      edit(pay) {
         // 跳到编辑页面
-        let canshu=JSON.parse(JSON.stringify(pay));
+        let canshu = JSON.parse(JSON.stringify(pay));
         console.log(1);
         this.$router.push({
-          path:"advertis-update",
-          query:canshu,
+          path: "advertis-update",
+          query: canshu,
         })
       },
-      xuan(value){
-        //  需要想vuex中暴露一个选择框的情况
-          this.$store.state.batch.change_num=value;
+      xuan(value) {
+        //  需要想vuex中暴露一个选择框选择的元素id
+        let arr = [];
+        value.forEach(elem => arr.push(elem.ad_id));
+        this.$store.state.batch.change_num = arr;
       }
     },
     watch: {
@@ -136,20 +138,18 @@
         },
         deep: true,
       },
-     'batch.change_ajax':{
+      'batch.change_ajax': {
         handler: function (value) {
-          if(value!=""){
-            // 遍历
-            let param={};
-            /* for(let key in this.$store.state.batch.change_num){
-
-            } */
+          if (value) {
             // 发起ajax请求
-            // 释放vuex.batch
+            this.http(this.page);
+            // 释放vuex.batch 恢复原来的样式
+            this.$store.state.batch.change_num = [];
+            this.$store.state.batch.change_ajax = false;
           }
         },
         deep: true,
-     }
+      }
     },
   };
 </script>

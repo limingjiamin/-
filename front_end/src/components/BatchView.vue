@@ -39,14 +39,15 @@
         ],
         value: "",
         dialog: false,
+        table:"",
+        pri:"",
       };
     },
     methods: {
       bacth() {
         // 1.获取当前表格的选择情况
-        if (this.$store.state.batch.change_num != 0) {
+        if (this.$store.state.batch.change_num.length!=0) {
           // 2.获取当前选择器的lebel(this.value)
-          // 3.将这个lebel暴露给表格
           if (this.value != "") {
             this.dialog=true;
           }
@@ -54,24 +55,45 @@
       },
       que(){
         this.dialog=false;
-        let a={address:this.$route.name,type:"POST"};
+        let path;
+        // 根据路由发起请求获取表格和主键
+        $http("/route",{address:this.$route.name}).then(data=>{
+          if(data.code!=400){
+            this.table=data.data[0].table_name;
+            this.pri=data.data[0].column_name;
+          }
+        })
+        let param={
+          table:this.table,//表格
+          pri:this.pri,//主键
+          id:this.$store.state.batch.change_num,//数据源
+          field:"",//字段名
+          value:"",//值
+        };
         switch (this.value){
-          case "批量删除": a.path="/batch_delete"; break;
-          case "商品上架": a.path="/batch_shop_shangjia"; break;
-          case "商品下架": a.path="/batch_shop_xiajia"; break;
-          case "设为推荐": a.path="/batch_recomm"; break;
-          case "取消推荐": a.path="/batch_recomm-no"; break;
-          case "设为新品": a.path="/batch_new"; break;
-          case "取消新品": a.path="/batch_new-no"; break;
-          case "转移到分类": a.path="/batch_class"; break;
-          case "移入回收站": a.path="/batch_recovery"; break;
-          case "显示品牌": a.path="/batch_brand"; break;
-          case "隐藏品牌": a.path="/batch_brand-no"; break;
-          case "批量发货": a.path="/batch_consignment"; break;
-          case "关闭订单": a.path="/batch_order-no"; break;
-          case "删除订单": a.path="/batch_order-del"; break;
+          case "批量删除": path="/batch_delete"; break;
+          case "商品上架": path="/batch_update";param.field="putaway";param.value="1";break;
+          case "商品下架":path="/batch_update";param.field="putaway";param.value="0"; break;
+          case "设为推荐": path="/batch_update"; param.field="recommend";param.value="1";break;
+          case "取消推荐": path="/batch_update";param.field="recommend";param.value="0"; break;
+          case "设为新品": path="/batch_update";param.field="is_new";param.value="1"; break;
+          case "取消新品": path="/batch_update"; param.field="is_new";param.value="0";break;
+          case "显示品牌": path="/batch_update"; param.field="is_show";param.value="1";break;
+          case "隐藏品牌": path="/batch_update";param.field="is_show";param.value="0"; break;
+          case "批量发货": path="/batch_update"; param.field="status";param.value="已发货";break;
+          case "关闭订单": path="/batch_update";param.field="status";param.value="已关闭"; break;
+          case "删除订单": path="/batch_delete"; break;
         }
-        this.$store.state.batch.change_ajax = a;
+        $http(path,param,"POST").then(data=>{
+          if(data.code!=400){
+            if(data.type=="del"){
+              this.$store.state.page.page_count-=this.$store.state.batch.change_num.length
+            }
+            // 告诉表格可以刷新页面了
+            this.$store.state.batch.change_ajax = true;
+          }
+      })
+       //选择框恢复初始状态
         this.value="";
       }
     },
