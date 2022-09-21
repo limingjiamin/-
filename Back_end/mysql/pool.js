@@ -4,8 +4,8 @@ let pool = mysql.createPool({
   host: "localhost",
   post: 3306,
   user: "root",
-  password: "root",
-  database: "mall",
+  password: "123456",
+  database: "management",
   connectionLimit: 10,
 });
 

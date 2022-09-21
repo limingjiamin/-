@@ -216,7 +216,7 @@ export default {
       this.dialog = false;
       $http("/market/seckill_delete", { id: this.del_id }).then((data) => {
         if (data.code != 400) {
-          this.http();
+          this.page.page_count--;
         }
       });
     },

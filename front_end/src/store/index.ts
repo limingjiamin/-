@@ -8,8 +8,8 @@ export default createStore({
       page_count: "",
     },
     batch: {
-      change_num: 0,//选中的个数
-      change_lebel:"",//批量选中的操作
+      change_num: [],//选中的个数的id数组
+      change_ajax:false,//批量选中的操作的结果(true,false)
     }
   },
   getters: {},
