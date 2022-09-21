@@ -45,12 +45,18 @@
       </template>
     </el-table-column>
   </el-table>
+<!--  <div class="buttom-part">-->
+<!--    <BatchView/>-->
+<!--    <PagingView/>-->
+<!--  </div>-->
 </template>
 
 <script lang="ts" setup>
 import axios from 'axios/index'
 import {Ref, ref, onBeforeMount, reactive} from 'vue'
-import { ElTable } from 'element-plus'
+import {ElMessage, ElTable} from 'element-plus'
+import PagingView from  '@/components/PagingView.vue'
+import BatchView from '@/components/BatchView.vue'
 interface Order{
   id: number,
   order_num: string,
@@ -81,8 +87,18 @@ interface Order{
 const handleEdit = (index: number, row: Order) => {
   console.log(index, row)
 }
+
 const handleDelete = (index: number, row: Order) => {
   console.log(index, row)
+  axios({
+    url:'http://localhost:3000/order/order_delete',
+    method:'get',
+    params:{
+      id:row.id
+    }
+  }).then(({data})=>{
+    console.log(data)
+  })
 }
 const multipleTableRef = ref<InstanceType<typeof ElTable>>()
 const multipleSelection = ref<Order[]>([])
@@ -111,4 +127,11 @@ onBeforeMount(  ()=>{
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.buttom-part{
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>
