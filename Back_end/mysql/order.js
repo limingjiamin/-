@@ -31,6 +31,48 @@ class order {
       });
     });
   }
+  reason(table, parameter) {
+    let count =
+        parameter.page_size == undefined || parameter.page_size == ""
+            ? 5
+            : parameter.page_size;
+    let state =
+        parameter.page_num == undefined || parameter.page_num == ""
+            ? 0
+            : (parameter.page_num - 1) * parameter.page_size;
+    sql = `select * from ${table} limit ${state},${count}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+
+
+  lists(table, parameter) {
+    let count =
+        parameter.page_size == undefined || parameter.page_size == ""
+            ? 5
+            : parameter.page_size;
+    let state =
+        parameter.page_num == undefined || parameter.page_num == ""
+            ? 0
+            : (parameter.page_num - 1) * parameter.page_size;
+    sql = `select a.*,b.account,c.price,c.order_num 
+    from ${table} a 
+    left join consumer b
+    on a.consumer_id=b.c_id
+    left join order_list c
+    on a.order_id=c.id
+     limit ${state},${count}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   //查看某一订单信息
   order_select(table, param) {
     let { id } = param;
@@ -120,6 +162,8 @@ class order {
       });
     });
   }
+
+
 
   // 退货原因编辑
   reason_edit(table, param) {

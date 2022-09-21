@@ -220,13 +220,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-// if(to.meta.isAuth){
-//   if(localStorage.getItem('authorize')){
-//     next()
-//   }else{
-//     alert("没有权限无法访问")
-//   }
-// }
-// }
 
 export default router;
