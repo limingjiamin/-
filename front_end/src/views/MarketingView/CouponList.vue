@@ -99,7 +99,7 @@
         //发起ajax请求删除数据
         $http("/market/coupon_delete",{cou_id:this.del_id}).then(data=>{
           if (data.code != 400) {
-          this.http();
+            this.page.page_count--;
         }
         })
       },
