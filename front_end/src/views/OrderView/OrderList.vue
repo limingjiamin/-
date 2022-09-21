@@ -2,29 +2,46 @@
   <el-table
       ref="multipleTableRef"
       :data="tableData"
-      style="width: 100%"
+      size="large"
+      stripe="true"
+      border
+
       @selection-change="handleSelectionChange"
   >
-    <el-table-column type="selection" />
-    <el-table-column property="id" label="编号" width="80" />
-    <el-table-column property="order_num" label="订单编号" />
-    <el-table-column property="commite_time" label="提交时间" />
-    <el-table-column property="account" label="用户账号" />
-    <el-table-column property="price" label="订单金额" />
-    <el-table-column property="way" label="支付方式" />
-    <el-table-column property="source" label="订单来源" />
-    <el-table-column property="status" label="订单状态" show-overflow-tooltip />
-    <el-table-column label="操作">
+    <el-table-column align="center" type="selection" />
+    <el-table-column align="center" property="id" label="编号" width="65" />
+    <el-table-column align="center" property="order_num" label="订单编号" width="150" />
+    <el-table-column align="center" property="commite_time" label="提交时间" />
+    <el-table-column align="center" property="account" label="用户账号" />
+    <el-table-column align="center" property="price" label="订单金额" />
+    <el-table-column align="center" property="way" label="支付方式" />
+    <el-table-column align="center" property="source" label="订单来源" />
+    <el-table-column align="center" property="status" label="订单状态" show-overflow-tooltip />
+    <el-table-column align="center" label="操作" width="250">
       <template #default="scope">
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-        >Edit</el-button
+        <el-button  @click="handleEdit(scope.$index, scope.row)"
+        >查看订单</el-button
         >
         <el-button
-            size="small"
+            v-if="scope.row.status==='已关闭'"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
-        >Delete</el-button
-        >
+        >删除订单</el-button>
+        <el-button
+            v-else-if="scope.row.status==='待发货'"
+            type="primary"
+            @click="handleDelete(scope.$index, scope.row)"
+        >订单发货</el-button>
+        <el-button
+            v-else-if="scope.row.status==='已完成'"
+            type="success"
+            @click="handleDelete(scope.$index, scope.row)"
+        >订单跟踪</el-button>
+        <el-button
+            v-else-if="scope.row.status==='已发货'"
+            type="success"
+            @click="handleDelete(scope.$index, scope.row)"
+        >订单跟踪</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -32,7 +49,7 @@
 
 <script lang="ts" setup>
 import axios from 'axios/index'
-import { Ref,ref,reactive,onMounted ,onBeforeMount} from 'vue'
+import {Ref, ref, onBeforeMount, reactive} from 'vue'
 import { ElTable } from 'element-plus'
 interface Order{
   id: number,
@@ -73,6 +90,7 @@ const handleSelectionChange = (val: Order[]) => {
   multipleSelection.value = val
 }
 const tableData: Ref<Order[]> = ref([])
+// const tableData=reactive<Order>([])
 //通过组合式api的形式使用api
 onBeforeMount(  ()=>{
   axios({
@@ -87,10 +105,6 @@ onBeforeMount(  ()=>{
   }).then(({data})=>{
     if(data.code===0){
       tableData.value=data.data
-      // let tableData: Order[]=data.data
-      console.log(data.data)
-      console.log("----------------------")
-      console.log(tableData)
     }
   })
 })

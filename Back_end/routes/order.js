@@ -108,7 +108,7 @@ router.post("/order_setting",async (req,res)=>{
 
 //退货表格
 router.get("/return_application", async (req, res) => {
-  let data = await mysql.list("return_application", req.query);
+  let data = await mysql.lists("return_application", req.query);
   let count= await mysql.count("return_application");
   if (data.length == 0) {
     res.json({
@@ -142,7 +142,7 @@ router.get("/return_application_details",async (req,res)=>{
 
 //退货原因设置表格
 router.get("/return_reason", async (req, res) => {
-  let data = await mysql.list("return_reason", req.query);
+  let data = await mysql.reason("return_reason", req.query);
   let count= await mysql.count("return_reason");
   if (data.length == 0) {
     res.json({
