@@ -26,9 +26,15 @@
       </template>
     </el-table-column>
   </el-table>
+  <div class="buttom-part">
+    <BatchView/>
+    <PagingView/>
+  </div>
 </template>
 
 <script lang="ts" setup>
+import PagingView from  '@/components/PagingView.vue'
+import BatchView from '@/components/BatchView.vue'
 import axios from 'axios/index'
 import { Ref,ref,onBeforeMount} from 'vue'
 import { ElTable } from 'element-plus'
@@ -71,4 +77,11 @@ onBeforeMount(  ()=>{
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.buttom-part{
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>

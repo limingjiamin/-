@@ -16,17 +16,9 @@
   </div>
 </template>
 
-<script>
-import AsideView from "@/components/AsideView";
-import HeaderView from "@/components/HeaderView";
-
-export default {
-  name: "LayoutView",
-  components: {
-    AsideView,
-    HeaderView,
-  },
-};
+<script lang="ts" setup>
+import AsideView from "@/components/AsideView.vue";
+import HeaderView from "@/components/HeaderView.vue";
 </script>
 <style lang="less">
 .el-header {
