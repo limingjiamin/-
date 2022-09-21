@@ -19,6 +19,24 @@ router.post("/seckill", async (req, res) => {
     });
   }
 });
+//专题表格
+router.post("/special", async (req, res) => {
+  let data = await mysql.seckill("special", req.body);
+  let count = await mysql.count("special");
+  if (data.length == 0) {
+    res.json({
+      code: 400,
+      data: "数据库没有这么多的数据",
+    });
+  } else {
+    res.json({
+      code: 200,
+      count: count[0].a,
+      data: data,
+    });
+  }
+});
+
 
 //秒杀活动上下线
 router.get("/upper_line", async (req, res) => {

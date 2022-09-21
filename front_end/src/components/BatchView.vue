@@ -23,8 +23,8 @@
   import $http from "@/axios/index.js";
   export default {
     created() {
-      this.$store.state.batch.change_num=0;
-      this.$store.state.batch.change_ajax="";
+      this.$store.state.batch.change_num = "";
+      this.$store.state.batch.change_ajax = false;
       // 1.获取当前的路由地址
       let route = this.$route.name;
       // 2.将路由地址当做参数发起请求
@@ -35,66 +35,64 @@
     },
     data() {
       return {
-        options: [
-        ],
+        options: [],
         value: "",
         dialog: false,
-        table:"",
-        pri:"",
       };
     },
     methods: {
       bacth() {
         // 1.获取当前表格的选择情况
-        if (this.$store.state.batch.change_num.length!=0) {
+        if (this.$store.state.batch.change_num!= "") {
           // 2.获取当前选择器的lebel(this.value)
           if (this.value != "") {
-            this.dialog=true;
+            this.dialog = true;
           }
         }
       },
-      que(){
-        this.dialog=false;
-        let path;
+      que() {
+        this.dialog = false;
+        let path="",id=[];
+        for(let key in this.$store.state.batch.change_num){
+            id.push(this.$store.state.batch.change_num[key])
+        }
         // 根据路由发起请求获取表格和主键
-        $http("/route",{address:this.$route.name}).then(data=>{
-          if(data.code!=400){
-            this.table=data.data[0].table_name;
-            this.pri=data.data[0].column_name;
+        $http("/route", { address: this.$route.name }, "POST").then(data => {
+          if (data.code != 400) {
+            let param = {
+              table: data.data[0].table_name,//表格
+              pri: data.data[0].column_name,//主键
+              id:`[${id}]`,//数据源
+              field: "",//字段名
+              value: "",//值
+            };
+            switch (this.value) {
+              case "批量删除": path = "/batch_delete"; break;
+              case "商品上架": path = "/batch_update"; param.field = "putaway"; param.value = "1"; break;
+              case "商品下架": path = "/batch_update"; param.field = "putaway"; param.value = "0"; break;
+              case "设为推荐": path = "/batch_update"; param.field = "recommend"; param.value = "1"; break;
+              case "取消推荐": path = "/batch_update"; param.field = "recommend"; param.value = "0"; break;
+              case "设为新品": path = "/batch_update"; param.field = "is_new"; param.value = "1"; break;
+              case "取消新品": path = "/batch_update"; param.field = "is_new"; param.value = "0"; break;
+              case "显示品牌": path = "/batch_update"; param.field = "is_show"; param.value = "1"; break;
+              case "隐藏品牌": path = "/batch_update"; param.field = "is_show"; param.value = "0"; break;
+              case "批量发货": path = "/batch_update"; param.field = "status"; param.value = "已发货"; break;
+              case "关闭订单": path = "/batch_update"; param.field = "status"; param.value = "已关闭"; break;
+              case "删除订单": path = "/batch_delete"; break;
+            }
+            $http(path, param, "POST").then(data => {
+              if (data.code != 400) {
+                if (data.type == "del") {
+                  this.$store.state.page.page_count -= this.$store.state.batch.change_num.length
+                }
+                // 告诉表格可以刷新页面了
+                this.$store.state.batch.change_ajax = true;
+              }
+            })
+            //选择框恢复初始状态
+            this.value = "";
           }
         })
-        let param={
-          table:this.table,//表格
-          pri:this.pri,//主键
-          id:this.$store.state.batch.change_num,//数据源
-          field:"",//字段名
-          value:"",//值
-        };
-        switch (this.value){
-          case "批量删除": path="/batch_delete"; break;
-          case "商品上架": path="/batch_update";param.field="putaway";param.value="1";break;
-          case "商品下架":path="/batch_update";param.field="putaway";param.value="0"; break;
-          case "设为推荐": path="/batch_update"; param.field="recommend";param.value="1";break;
-          case "取消推荐": path="/batch_update";param.field="recommend";param.value="0"; break;
-          case "设为新品": path="/batch_update";param.field="is_new";param.value="1"; break;
-          case "取消新品": path="/batch_update"; param.field="is_new";param.value="0";break;
-          case "显示品牌": path="/batch_update"; param.field="is_show";param.value="1";break;
-          case "隐藏品牌": path="/batch_update";param.field="is_show";param.value="0"; break;
-          case "批量发货": path="/batch_update"; param.field="status";param.value="已发货";break;
-          case "关闭订单": path="/batch_update";param.field="status";param.value="已关闭"; break;
-          case "删除订单": path="/batch_delete"; break;
-        }
-        $http(path,param,"POST").then(data=>{
-          if(data.code!=400){
-            if(data.type=="del"){
-              this.$store.state.page.page_count-=this.$store.state.batch.change_num.length
-            }
-            // 告诉表格可以刷新页面了
-            this.$store.state.batch.change_ajax = true;
-          }
-      })
-       //选择框恢复初始状态
-        this.value="";
       }
     },
   };

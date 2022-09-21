@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header class="yanse">用来存放{{ batch_titie}}和数据列表</el-header>
+      <el-header class="yanse">用来存放{{}}和数据列表</el-header>
       <el-main>
         <el-table :data="tableData" border style="width: 100%" @selection-change="xuan">
           <el-table-column type="selection" align="center" />
