@@ -1,10 +1,10 @@
 <template>
-    <slot></slot>
+
 </template>
 
 <script>
 export default {
-  name: "TableView",
+  name: "OrderDetail",
 };
 </script>
 
