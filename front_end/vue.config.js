@@ -2,9 +2,9 @@ const { defineConfig } = require("@vue/cli-service");
 module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
-  devServer:{
+  /* devServer:{
     client:{
-      WebSocketURL:'localhost:8080/ws',
+      WebSocketURL:'ws://localhost:8080/ws',
     }
-  }
+  } */
 });
