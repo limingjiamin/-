@@ -140,9 +140,8 @@ const routes: Array<RouteRecordRaw> = [
         meta: { isAuth: true, title: "专题推荐" },
       },
       {
-        path: "spike-time/:id",
+        path: "spike-time",
         name: "spike-time",
-        props: true,
         component: () => import("@/views/MarketingView/SpikeTime.vue"),
         meta: { isAuth: true, title: "秒杀时间" },
       },
@@ -163,6 +162,12 @@ const routes: Array<RouteRecordRaw> = [
         name: "advertis-update",
         component: () => import("@/views/MarketingView/AdvertisingEdit.vue"),
         meta: { isAuth: true, title: "广告修改" },
+      },
+      {
+        path: "spike-comm",
+        name: "spike-comm",
+        component: () => import("@/views/MarketingView/SpikeComm.vue"),
+        meta: { isAuth: true, title: "秒杀商品" },
       },
     ],
   },

@@ -37,7 +37,6 @@ router.post("/special", async (req, res) => {
   }
 });
 
-
 //秒杀活动上下线
 router.get("/upper_line", async (req, res) => {
   let data = await mysql.upper_line("seckill", req.query);
@@ -145,6 +144,30 @@ router.get("/coupon_delete", async (req, res) => {
     }
   }
 });
+
+// 专题删除
+router.get("/special_delete", async (req, res) => {
+  let data = await mysql.special_delete("special", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      meg: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "删除成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `删除失败`,
+      });
+    }
+  }
+});
+
 // 广告数据请求
 router.get("/advertis", async (req, res) => {
   let data = await mysql.seckill("advertis", req.query);
@@ -207,4 +230,82 @@ router.get("/upper", async (req, res) => {
     }
   }
 });
+
+//专题推荐修改
+router.get("/recommend", async (req, res) => {
+  let data = await mysql.recommend("special", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      meg: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `修改失败`,
+      });
+    }
+  }
+});
+
+//专题排序修改
+router.get("/sort", async (req, res) => {
+  let data = await mysql.sort("special", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      meg: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `修改失败`,
+      });
+    }
+  }
+});
+
+router.get("/seckill_time", async (req, res) => {
+  let data = await mysql.seckill_time(req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data: data,
+    });
+  } else {
+    res.json({
+      code: 200,
+      data: data,
+    });
+  }
+});
+
+router.get("/seckill_shop", async (req, res) => {
+  let data = await mysql.seckill_shop(req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data: data,
+    });
+  } else {
+    res.json({
+      code: 200,
+      data: data,
+    });
+  }
+});
+
+
 module.exports = router;

@@ -24,6 +24,19 @@
             </template>
           </el-table-column>
         </el-table>
+        
+        <el-dialog v-model="dialogVisible" title="设置排序" width="30%" align="left">
+            <el-form-item label="排序 :" label-width="150px" style="width: 80%;font-size:25px ;">
+              <el-input v-model="dia_from.sp_sort" autocomplete="off" size=large style="font-size:18px ;" />
+            </el-form-item>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogVisible = false">取消</el-button>
+              <el-button type="primary" @click="commit">确定</el-button>
+            </span>
+          </template>
+        </el-dialog>
+
         <el-dialog v-model="dialog" title="提示" width="30%" align="left">
           <div class="wei">
             <el-avatar src="http://icon.chrafz.com/uploads/151023/1-151023213T2X7.png" />
@@ -63,7 +76,7 @@
         tableData: [],
         dialogVisible: false,
         dialog: false,
-        dia_from: {},
+        dia_from:"",
         del_id: 0,
         batch: {}
       };
@@ -86,9 +99,9 @@
       },
       meg(paylody) {
         //  发起请求改变数据库中marke表中上线的状态。
-        $http("/market/upper", {
-          id: paylody.ad_id,
-          upper: paylody.ad_upper,
+        $http("/market/recommend", {
+          id: paylody.sp_id,
+          recommend: paylody.recommend,
         }).then((data) => {
           console.log(data);
         });
@@ -96,25 +109,31 @@
       delect(pay) {
         // 1.弹出确定对话框，提示用户
         this.dialog = true;
-        this.del_id = pay.ad_id;
-
+        this.del_id = pay.sp_id;
+         del(pay)
       },
       del() {
         this.dialog = false;
         //发起ajax请求删除数据
-        $http("/market/advertis_delete", { id: this.del_id }).then(data => {
+        $http("/market/special_delete", { sp_id: this.del_id }).then(data => {
           if (data.code != 400) {
             this.page.page_count--;
           }
         })
       },
       edit(pay) {
-        // 跳到编辑页面
-        let canshu = JSON.parse(JSON.stringify(pay));
-        console.log(1);
-        this.$router.push({
-          path: "advertis-update",
-          query: canshu,
+        this.dialogVisible=true;
+        this.dia_from= JSON.parse(JSON.stringify(pay));
+      },
+      commit(){
+        // 根据id修改数据
+        $http("/market/sort",{
+          id:this.dia_from.sp_id,
+          sort:this.dia_from.sp_sort
+        }).then((data)=>{
+          if(data.code!=400){
+            this.http(this.page);
+          }
         })
       },
       xuan(value) {
