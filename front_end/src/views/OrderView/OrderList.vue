@@ -1,4 +1,6 @@
 <template>
+  <AddView></AddView>
+  <br>
   <el-table
     ref="multipleTableRef"
     :data="tableData"
@@ -14,7 +16,7 @@
       label="订单编号"
       width="150"
     />
-    <el-table-column align="center" property="commite_time" label="提交时间" />
+    <el-table-column align="center" property="commite_time" label="提交时间"  width="180"/>
     <el-table-column align="center" property="account" label="用户账号" />
     <el-table-column align="center" property="price" label="订单金额" />
     <el-table-column align="center" property="way" label="支付方式" />
@@ -106,6 +108,7 @@
 import axios from "axios/index";
 import { Ref, ref, onBeforeMount } from "vue";
 import { ElMessage, ElTable } from "element-plus";
+import AddView from '@/components/AddView.vue'
 import PagingView from "@/components/PagingView.vue";
 import BatchView from "@/components/BatchView.vue";
 interface Order {
@@ -161,6 +164,9 @@ const renderTable = () => {
     },
   }).then(({ data }) => {
     if (data.code === 0) {
+      data.data.forEach((item: Order) => {
+        item.commite_time=item.commite_time.slice(0,-5).replace('T',' ')
+      });
       tableData.value = data.data;
     }
   });

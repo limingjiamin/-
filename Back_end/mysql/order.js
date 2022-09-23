@@ -200,8 +200,9 @@ class order {
   // 添加退货原因
   reason_add(table, param) {
     let str = "";
-    let { reason, sort, status } = param;
+    let { reason, sort, status ,add_time} = param;
     if (reason != undefined && reason != "") str += `reason='${reason}',`;
+    if (add_time != undefined && add_time != "") str += `add_time='${add_time}',`;
     if (sort != undefined && sort != "") str += `sort='${sort}',`;
     if (status != undefined && status != "") str += `status='${status}',`;
     if (str == "") {

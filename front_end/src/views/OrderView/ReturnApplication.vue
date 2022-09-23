@@ -1,4 +1,6 @@
 <template>
+  <AddView></AddView>
+  <br>
   <el-table
     ref="multipleTableRef"
     :data="tableData"
@@ -14,6 +16,7 @@
       align="center"
       property="application_time"
       label="申请时间"
+      width="180"
     />
     <el-table-column align="center" property="account" label="用户账号" />
     <el-table-column align="center" property="price" label="退款金额" />
@@ -23,6 +26,7 @@
       property="processing_time"
       label="处理时间"
       show-overflow-tooltip
+      width="180"
     />
     <el-table-column align="center" label="操作" width="140">
       <template #default="scope">
@@ -41,6 +45,7 @@
 <script lang="ts" setup>
 import PagingView from "@/components/PagingView.vue";
 import BatchView from "@/components/BatchView.vue";
+import AddView from '@/components/AddView.vue'
 import axios from "axios/index";
 import { Ref, ref, onBeforeMount } from "vue";
 import { ElTable } from "element-plus";
@@ -77,6 +82,11 @@ onBeforeMount(() => {
     },
   }).then(({ data }) => {
     if (data.code === 0) {
+      data.data.forEach((item: Application) => {
+        item.application_time=item.application_time.slice(0,-5).replace('T',' ')
+        item.processing_time=item.processing_time.slice(0,-5).replace('T',' ')
+
+      });
       tableData.value = data.data;
     }
   });
