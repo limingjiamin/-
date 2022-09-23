@@ -3,7 +3,7 @@
     <el-container>
       <el-header class="yanse">用来存放{{ page }}和数据列表</el-header>
       <el-main>
-        <el-table :data="tableData" border style="width: 100%" :row-style=asd :header-row-style=asd>
+        <el-table :data="tableData" border style="width: 100%" :row-style="asd"  :header-row-style="asd">
           <el-table-column prop="num" label="编号" align="center" width="180" />
           <el-table-column prop="titie" label="秒杀时间段名称" align="center" width="200" />
           <el-table-column prop="s_time" label="每日开始时间" align="center" width="240" />
@@ -24,7 +24,6 @@
   import $http from "@/axios/index";
   export default {
     name: "SpikeTime",
-    props: ["id"],
     created() {
       this.http({ id: this.id });
     },
@@ -47,7 +46,6 @@
         });
       },
       meg(value) {
-        console.log(this.$router);
         this.$router.push({
           path: "spike-comm",
           query: {
