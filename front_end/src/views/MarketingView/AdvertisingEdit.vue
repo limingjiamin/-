@@ -1,10 +1,10 @@
 <template>
-    <div>
-       {{this.$route.query}} 
-    </div>
+  <div>
+    {{ this.$route.query }}
+  </div>
 </template>
 <script>
-    export default {
-        name:"AdvertisingEdit"
-    }
+export default {
+  name: "AdvertisingEdit",
+};
 </script>

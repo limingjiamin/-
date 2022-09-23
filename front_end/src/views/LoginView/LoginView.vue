@@ -129,7 +129,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   position: relative;
   z-index: 5;
   .card-header {
-    padding: none;
+    padding: 0;
     height: 15px;
   }
   .logo {
