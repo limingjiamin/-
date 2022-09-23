@@ -1,4 +1,9 @@
 <template>
+  <AddView>
+    <el-button type="primary" @click="handleAdd(true)">添加</el-button>
+  </AddView>
+  <br>
+<!--  表格-->
   <el-table
     ref="multipleTableRef"
     :data="tableData"
@@ -37,20 +42,24 @@
     <BatchView />
     <PagingView />
   </div>
-
   <!--  删除信息的对话框提示-->
   <el-dialog v-model="centerDialogVisible" title="删除提示" width="30%" center>
     <el-icon color="#E6A23C" size="18px"><WarningFilled /></el-icon>
     <span>确定要删除这条订单信息吗？</span>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="confirmDialog(false)">确认</el-button>
+        <el-button @click="centerDialogVisible = false">取消</el-button>
       </span>
     </template>
   </el-dialog>
   <!--  编辑信息的对话框-->
-  <el-dialog v-model="editDialog" title="编辑退货原因" width="30%" center>
+  <el-dialog
+      v-model="editDialog"
+      :title="dialog_title"
+      width="30%"
+      @close="closeDialog(editItem)"
+      center>
     <!--编辑的表单-->
     <el-form
       ref="editItem"
@@ -71,7 +80,7 @@
 
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="confirmEdit(false)">确认</el-button>
+        <el-button type="primary" @click="confirmForm(false)">确认</el-button>
         <el-button @click="editDialog = false">取消</el-button>
       </span>
     </template>
@@ -81,6 +90,8 @@
 <script lang="ts" setup>
 import PagingView from "@/components/PagingView.vue";
 import BatchView from "@/components/BatchView.vue";
+import AddView from "@/components/AddView.vue"
+import * as moment from 'moment'
 import axios from "axios/index";
 import { Ref, ref, onBeforeMount, reactive } from "vue";
 import { ElMessage, ElTable, FormInstance } from "element-plus";
@@ -116,6 +127,7 @@ const renderTable = () => {
       // 处理表格数据
       data.data.forEach((item: Order) => {
         item.status = Boolean(Number(item.status));
+        item.add_time=item.add_time.slice(0,-5).replace('T',' ')
       });
       tableData.value = data.data;
     }
@@ -165,41 +177,92 @@ const confirmDialog = (flag: boolean) => {
     }
   });
 };
-
+// 添加与编辑的标题
+let dialog_title=ref('')
 // 编辑的表格
 const editItem = ref<FormInstance>();
 let editForm = reactive({
   id: "",
   reason: "",
-  add_time: "",
   sort: "",
-  status: "",
+  status: "0",
 });
 
 // 编辑的逻辑
 let editDialog = ref(false);
-let edit_item: Order;
 const handleEdit = (row: Order, flag: boolean) => {
   editDialog.value = flag;
+  editForm.id=String(row.id)
+  editForm.reason=row.reason
+  editForm.sort=String(row.sort)
+  editForm.status=String(row.status)
+  dialog_title.value="编辑退货原因"
 
-  console.log("2222222222222222222222", edit_item);
 };
 
 const confirmEdit = (flag: boolean) => {
   editDialog.value = flag;
-  // axios({
-  //   url:'http://localhost:3000/order/return_reason_edit',
-  //   method:'post',
-  //   data:{
-  //     id :edit_item.id,
-  //     reason:edit_item.reason,
-  //     sort :edit_item.sort,
-  //     status:edit_item.status,
-  //   }
-  // }).then(({data})=>{
-  //   console.log(data)
-  // })
+  axios({
+    url:'http://localhost:3000/order/return_reason_edit',
+    method:'post',
+    data:{
+      id :editForm.id,
+      reason:editForm.reason,
+      sort :editForm.sort,
+      status:String(Number(editForm.status)),
+    }
+  }).then(({data})=>{
+    if (data.code === 0) {
+      tips_success();
+      // 重新渲染列表
+      renderTable();
+    } else {
+      tips_error();
+    }
+  })
 };
+// 添加
+const handleAdd=(flag:boolean,addForm:Order)=>{
+  editDialog.value = flag;
+  dialog_title.value="添加退货原因"
+}
+const confirmAdd = (flag: boolean) => {
+  editDialog.value = flag;
+  axios({
+    url:'http://localhost:3000/order/return_reason_add',
+    method:'post',
+    data:{
+      reason:editForm.reason,
+      sort :editForm.sort,
+      status:String(Number(editForm.status)),
+      add_time:moment().format('YYYY-MM-DD HH:mm:ss')
+    }
+  }).then(({data})=>{
+    if (data.code === 0) {
+      tips_success();
+      // 重新渲染列表
+      renderTable();
+      // 清空表单
+    } else {
+      tips_error();
+    }
+  })
+};
+const confirmForm=(flag:boolean)=>{
+  if(dialog_title.value==="添加退货原因"){
+    confirmAdd(flag)
+  }else{
+    confirmEdit(flag)
+  }
+}
+// 清空表单
+const closeDialog=()=>{
+  editForm.id=''
+  editForm.sort=''
+  editForm.status='0'
+  editForm.reason=''
+}
+
 </script>
 
 <style scoped>
