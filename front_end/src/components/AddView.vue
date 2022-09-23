@@ -14,6 +14,9 @@
 </template>
 <script></script>
 <style scoped lang="less">
+.el-card.is-always-shadow {
+   box-shadow:none;
+}
 .box {
   .box-card {
     height: 70px;

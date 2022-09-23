@@ -110,7 +110,6 @@
         // 1.弹出确定对话框，提示用户
         this.dialog = true;
         this.del_id = pay.sp_id;
-        this.del(pay)
       },
       del() {
         this.dialog = false;
@@ -127,6 +126,7 @@
       },
       commit() {
         // 根据id修改数据
+        this.dialogVisible = false;
         $http("/market/sort", {
           id: this.dia_from.sp_id,
           sort: this.dia_from.sp_sort
