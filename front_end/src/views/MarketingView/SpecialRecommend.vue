@@ -24,11 +24,11 @@
             </template>
           </el-table-column>
         </el-table>
-        
+
         <el-dialog v-model="dialogVisible" title="设置排序" width="30%" align="left">
-            <el-form-item label="排序 :" label-width="150px" style="width: 80%;font-size:25px ;">
-              <el-input v-model="dia_from.sp_sort" autocomplete="off" size=large style="font-size:18px ;" />
-            </el-form-item>
+          <el-form-item label="排序 :" label-width="150px" style="width: 80%;font-size:25px ;">
+            <el-input v-model="dia_from.sp_sort" autocomplete="off" size=large style="font-size:18px ;" />
+          </el-form-item>
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="dialogVisible = false">取消</el-button>
@@ -76,7 +76,7 @@
         tableData: [],
         dialogVisible: false,
         dialog: false,
-        dia_from:"",
+        dia_from: "",
         del_id: 0,
         batch: {}
       };
@@ -110,7 +110,7 @@
         // 1.弹出确定对话框，提示用户
         this.dialog = true;
         this.del_id = pay.sp_id;
-         del(pay)
+        this.del(pay)
       },
       del() {
         this.dialog = false;
@@ -122,16 +122,16 @@
         })
       },
       edit(pay) {
-        this.dialogVisible=true;
-        this.dia_from= JSON.parse(JSON.stringify(pay));
+        this.dialogVisible = true;
+        this.dia_from = JSON.parse(JSON.stringify(pay));
       },
-      commit(){
+      commit() {
         // 根据id修改数据
-        $http("/market/sort",{
-          id:this.dia_from.sp_id,
-          sort:this.dia_from.sp_sort
-        }).then((data)=>{
-          if(data.code!=400){
+        $http("/market/sort", {
+          id: this.dia_from.sp_id,
+          sort: this.dia_from.sp_sort
+        }).then((data) => {
+          if (data.code != 400) {
             this.http(this.page);
           }
         })
