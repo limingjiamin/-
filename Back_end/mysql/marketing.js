@@ -72,12 +72,55 @@ class marketing {
       });
     });
   }
+  recommends(table, param) {
+    let { id, recommend } = param;
+    if (id == undefined || id == "") return "请输入正确的id号";
+    if (recommend == undefined || recommend == "") return "请输入正确的状态";
+    recommend = recommend == "true" ? 1 : 0;
+    sql = `update ${table} set recommend='${recommend}' where id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+
   sort(table, param) {
     let { id, sort } = param;
     if (id == undefined || id == "") return "请输入正确的id号";
     if (sort == undefined || sort == "") return "请输入正确的状态";
-    sort = sort == "true" ? 1 : 0;
     sql = `update ${table} set sp_sort='${sort}' where sp_id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+
+  sorts(table, param) {
+    let { id, sort } = param;
+    if (id == undefined || id == "") return "请输入正确的id号";
+    if (sort == undefined || sort == "") return "请输入正确的状态";
+    sql = `update ${table} set sort='${sort}' where id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  secli_comm(table, param) {
+    let { price, num, pr, sort, id } = param;
+    let str = "";
+    if (id == undefined || id == "") return "请输入id";
+    if (price != undefined && price != "") str += `price='${price}',`;
+    if (num != undefined && num != "") str += `num='${num}',`;
+    if (pr != undefined && pr != "") str += `pr='${pr}',`;
+    if (sort != undefined && sort != "") str += `sort='${sort}',`;
+    str = str.slice(0, -1);
+    sql = `update ${table} set ${str} where comm_id=${id}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
@@ -118,11 +161,33 @@ class marketing {
       });
     });
   }
-
+  seckill_comm_del(table, param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入订单id";
+    sql = `delete from ${table} where comm_id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   coupon_delete(table, param) {
     let { cou_id } = param;
     if (cou_id == undefined || cou_id == "") return "请输入订单id";
     sql = `delete from ${table} where  cou_id=${cou_id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+
+  coupon_history(table, param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入订单id";
+    sql = `select * from ${table} where cou_id=${id}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
@@ -142,7 +207,18 @@ class marketing {
       });
     });
   }
-
+  brand_delete(table, param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入订单id";
+    console.log(id);
+    sql = `delete from ${table} where  id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   advertis_delete(table, param) {
     let { id } = param;
     if (id == undefined || id == "") return "请输入订单id";
@@ -169,12 +245,13 @@ class marketing {
       });
     });
   }
-   
-  seckill_shop(param){
-    let { time_id, seckill_id} = param;
+
+  seckill_shop(param) {
+    let { time_id, seckill_id } = param;
     if (time_id == undefined || time_id == "") return "请输入活动time_id";
-    if (seckill_id == undefined || seckill_id == "") return "请输入活动seckill_id";
-    sql=`select a.id,a.p_id,a.p_name,a.art_no,a.p_price,a.inventory,a.sort,b.price,b.num,b.pr from commodity a right join secli_comm b on a.id=b.comm_id  where b.seckill_id=${seckill_id} and b.time_id=${time_id};`
+    if (seckill_id == undefined || seckill_id == "")
+      return "请输入活动seckill_id";
+    sql = `select a.id,a.p_id,a.p_name,a.art_no,a.p_price,a.inventory,b.price,b.num,b.pr,b.sort from commodity a right join secli_comm b on a.id=b.comm_id  where b.seckill_id=${seckill_id} and b.time_id=${time_id};`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
@@ -182,8 +259,6 @@ class marketing {
       });
     });
   }
-  
-
 }
 
 module.exports = new marketing();
