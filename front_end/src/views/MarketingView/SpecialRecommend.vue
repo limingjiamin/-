@@ -103,7 +103,7 @@
           id: paylody.sp_id,
           recommend: paylody.recommend,
         }).then((data) => {
-          console.log(data);
+          this.http(this.page);
         });
       },
       delect(pay) {

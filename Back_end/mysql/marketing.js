@@ -14,6 +14,24 @@ class marketing {
       });
     });
   }
+  counts(table) {
+    sql = `select count(1) a from ${table} where is_new='1';`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  pro_count(table) {
+    sql = `select count(1) a from ${table} where pro>2999;`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   seckill(table, parameter) {
     let count =
       parameter.page_size == undefined || parameter.page_size == ""
@@ -31,7 +49,40 @@ class marketing {
       });
     });
   }
-
+  new_product(table, parameter) {
+    let count =
+      parameter.page_size == undefined || parameter.page_size == ""
+        ? 5
+        : parameter.page_size;
+    let state =
+      parameter.page_num == undefined || parameter.page_num == ""
+        ? 0
+        : (parameter.page_num - 1) * parameter.page_size;
+    sql = `select id,p_id,p_name,recommend,sort from ${table}  where is_new='1' limit ${state},${count}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  pro_product(table, parameter) {
+    let count =
+      parameter.page_size == undefined || parameter.page_size == ""
+        ? 5
+        : parameter.page_size;
+    let state =
+      parameter.page_num == undefined || parameter.page_num == ""
+        ? 0
+        : (parameter.page_num - 1) * parameter.page_size;
+    sql = `select id,p_id,p_name,recommend,sort from ${table} where pro>2999 order by sell_num desc limit ${state},${count}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   //秒杀表格上线状态
   upper_line(table, param) {
     let { id, upper_line } = param;
@@ -252,6 +303,29 @@ class marketing {
     if (seckill_id == undefined || seckill_id == "")
       return "请输入活动seckill_id";
     sql = `select a.id,a.p_id,a.p_name,a.art_no,a.p_price,a.inventory,b.price,b.num,b.pr,b.sort from commodity a right join secli_comm b on a.id=b.comm_id  where b.seckill_id=${seckill_id} and b.time_id=${time_id};`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+
+  new_delete(table, param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入订单id";
+    sql = `update ${table} set is_new='0' where id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  pro_delete(table, param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入订单id";
+    sql = `update ${table} set pro=null where id=${id}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
