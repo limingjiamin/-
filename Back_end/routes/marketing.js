@@ -53,7 +53,40 @@ router.post("/brand", async (req, res) => {
     });
   }
 });
+// 新品表格
+router.post("/new_product", async (req, res) => {
+  let data = await mysql.new_product("commodity", req.body);
+  let count = await mysql.counts("commodity");
+  if (data.length == 0) {
+    res.json({
+      code: 400,
+      data: "数据库没有这么多的数据",
+    });
+  } else {
+    res.json({
+      code: 200,
+      count: count[0].a,
+      data: data,
+    });
+  }
+});
 
+router.post("/pro_product", async (req, res) => {
+  let data = await mysql.pro_product("commodity", req.body);
+  let count = await mysql.pro_count("commodity");
+  if (data.length == 0) {
+    res.json({
+      code: 400,
+      data: "数据库没有这么多的数据",
+    });
+  } else {
+    res.json({
+      code: 200,
+      count: count[0].a,
+      data: data,
+    });
+  }
+});
 //秒杀活动上下线
 router.get("/upper_line", async (req, res) => {
   let data = await mysql.upper_line("seckill", req.query);
@@ -337,6 +370,28 @@ router.get("/recommend", async (req, res) => {
   }
 });
 
+router.get("/new_recommend", async (req, res) => {
+  let data = await mysql.recommends("commodity", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      meg: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `修改失败`,
+      });
+    }
+  }
+});
+
 //品牌推荐修改
 router.get("/recommends", async (req, res) => {
   let data = await mysql.recommends("brand", req.query);
@@ -406,7 +461,48 @@ router.get("/sorts", async (req, res) => {
   }
 });
 
-
+router.get("/new_sort", async (req, res) => {
+  let data = await mysql.sorts("commodity", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      meg: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `修改失败`,
+      });
+    }
+  }
+});
+router.get("/pro_sort", async (req, res) => {
+  let data = await mysql.sorts("commodity", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      meg: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `修改失败`,
+      });
+    }
+  }
+});
 //秒杀商品修改
 router.get("/secli_comm", async (req, res) => {
   let data = await mysql.secli_comm("secli_comm", req.query);
@@ -467,4 +563,46 @@ router.get("/seckill_shop", async (req, res) => {
   }
 });
 
+router.get("/new_delete", async (req, res) => {
+  let data = await mysql.new_delete("commodity", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      meg: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "删除成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `删除失败`,
+      });
+    }
+  }
+});
+router.get("/pro_delete", async (req, res) => {
+  let data = await mysql.pro_delete("commodity", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      meg: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "删除成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `删除失败`,
+      });
+    }
+  }
+});
 module.exports = router;

@@ -5,8 +5,8 @@
       <el-main>
         <el-table :data="tableData" border style="width: 100%" @selection-change="xuan">
           <el-table-column type="selection" align="center" width="100" />
-          <el-table-column prop="sp_num" label="编号" align="center" width="150" />
-          <el-table-column prop="sp_titie" label="商品名称" align="center" width="240" />
+          <el-table-column prop="p_id" label="编号" align="center" width="150" />
+          <el-table-column prop="p_name" label="商品名称" align="center" width="240" />
           <el-table-column label="是否推荐" align="center" width="220">
             <template #default="scope">
               <el-switch v-model="scope.row.recommend" class="ml-2" @change="meg(scope.row)" style="
@@ -15,7 +15,7 @@
                 " />
             </template>
           </el-table-column>
-          <el-table-column prop="sp_sort" label="排序" align="center" width="160" />
+          <el-table-column prop="sort" label="排序" align="center" width="160" />
           <el-table-column prop="state" label="状态" align="center" width="160" />
           <el-table-column label="操作" align="center" width="260">
             <template #default="scope">
@@ -27,7 +27,7 @@
 
         <el-dialog v-model="dialogVisible" title="设置排序" width="30%" align="left">
           <el-form-item label="排序 :" label-width="150px" style="width: 80%;font-size:25px ;">
-            <el-input v-model="dia_from.sp_sort" autocomplete="off" size=large style="font-size:18px ;" />
+            <el-input v-model="dia_from.sort" autocomplete="off" size=large style="font-size:18px ;" />
           </el-form-item>
           <template #footer>
             <span class="dialog-footer">
@@ -83,7 +83,7 @@
     },
     methods: {
       http(param) {
-        $http("/market/special", param, "POST").then((data) => {
+        $http("/market/new_product", param, "POST").then((data) => {
           data.data.forEach((elem) => {
             if (elem.recommend == "0") {
               elem.recommend = false;
@@ -99,23 +99,22 @@
       },
       meg(paylody) {
         //  发起请求改变数据库中marke表中上线的状态。
-        $http("/market/recommend", {
-          id: paylody.sp_id,
+        $http("/market/new_recommend", {
+          id: paylody.id,
           recommend: paylody.recommend,
         }).then((data) => {
-          console.log(data);
+          this.http(this.page);
         });
       },
       delect(pay) {
         // 1.弹出确定对话框，提示用户
         this.dialog = true;
-        this.del_id = pay.sp_id;
-        this.del(pay)
+        this.del_id = pay.id;
       },
       del() {
         this.dialog = false;
         //发起ajax请求删除数据
-        $http("/market/special_delete", { sp_id: this.del_id }).then(data => {
+        $http("/market/new_delete", { id: this.del_id }).then(data => {
           if (data.code != 400) {
             this.page.page_count--;
           }
@@ -126,10 +125,11 @@
         this.dia_from = JSON.parse(JSON.stringify(pay));
       },
       commit() {
+        this.dialogVisible = false;
         // 根据id修改数据
-        $http("/market/sort", {
-          id: this.dia_from.sp_id,
-          sort: this.dia_from.sp_sort
+        $http("/market/new_sort", {
+          id: this.dia_from.id,
+          sort: this.dia_from.sort
         }).then((data) => {
           if (data.code != 400) {
             this.http(this.page);
@@ -139,7 +139,7 @@
       xuan(value) {
         //  需要想vuex中暴露一个选择框选择的元素id
         let arr = [];
-        value.forEach(elem => arr.push(elem.sp_id));
+        value.forEach(elem => arr.push(elem.id));
         this.$store.state.batch.change_num = arr
       }
     },
