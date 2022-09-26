@@ -333,6 +333,17 @@ class marketing {
       });
     });
   }
+  advertis_select(table, param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入id";
+    sql=`select *from ${table} where ad_id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
 }
 
 module.exports = new marketing();

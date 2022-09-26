@@ -301,6 +301,21 @@ router.get("/advertis", async (req, res) => {
     });
   }
 });
+
+router.get("/advertis_select", async (req, res) => {
+  let data = await mysql.advertis_select("advertis", req.query);
+  if (data.length == 0) {
+    res.json({
+      code: 400,
+      data: "数据库没有这么多的数据",
+    });
+  } else {
+    res.json({
+      code: 200,
+      data: data,
+    });
+  }
+});
 // 广告删除
 router.get("/advertis_delete", async (req, res) => {
   let data = await mysql.advertis_delete("advertis", req.query);
