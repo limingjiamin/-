@@ -4,9 +4,8 @@
       <el-menu
         background-color="#304156"
         class="el-menu-vertical-demo"
-        :default-active="store.state.currentNavigation"
+        :default-active="route.path"
         text-color="rgb(191, 203, 217)"
-        @select="handleSelect"
         router
       >
         <el-menu-item index="/home">
@@ -165,15 +164,8 @@
 </template>
 
 <script lang="ts" setup>
-import {useStore} from "vuex";
-import {log} from "echarts/types/src/util/log";
-// import { ref } from "vue";
-// const isCollapse = ref(true);
-const store=useStore()
-const handleSelect=(index:string)=>{
-  store.commit('CHANGE',index)
-  console.log("qqqqq",store.state.currentNavigation)
-}
+import {useRoute} from 'vue-router'
+const route=useRoute()
 </script>
 
 <style scoped>

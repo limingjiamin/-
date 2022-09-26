@@ -13,13 +13,13 @@ export default createStore({
       change_num: "", //选中的个数的id数组
       change_ajax: false, //批量选中的操作的结果(true,false)
     },
-    currentNavigation:'/home'
+    // currentNavigation:'/home'
   },
   getters: {},
   mutations: {
-    CHANGE(state,value){
-        state.currentNavigation=value
-    }
+    // CHANGE(state,value){
+    //     state.currentNavigation=value
+    // }
   },
   actions: {},
   modules: {},

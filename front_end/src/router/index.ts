@@ -1,7 +1,11 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import LayoutView from "@/views/LayoutView/LayoutView.vue";
 const routes: Array<RouteRecordRaw> = [
-  {
+    {
+      path:'/',
+      redirect:'/home'
+    },
+    {
     path: "/",
     component: LayoutView,
     children: [
