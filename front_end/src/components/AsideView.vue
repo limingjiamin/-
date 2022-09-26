@@ -4,10 +4,9 @@
       <el-menu
         background-color="#304156"
         class="el-menu-vertical-demo"
-        default-active="/home"
+        :default-active="store.state.currentNavigation"
         text-color="rgb(191, 203, 217)"
-        @open="handleOpen"
-        @close="handleClose"
+        @select="handleSelect"
         router
       >
         <el-menu-item index="/home">
@@ -16,7 +15,7 @@
             <span>首页</span>
           </template>
         </el-menu-item>
-        <el-sub-menu index="2">
+        <el-sub-menu index="/commodity">
           <template #title>
             <el-icon><Goods /></el-icon>
             <span>商品</span>
@@ -166,14 +165,15 @@
 </template>
 
 <script lang="ts" setup>
+import {useStore} from "vuex";
+import {log} from "echarts/types/src/util/log";
 // import { ref } from "vue";
 // const isCollapse = ref(true);
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
+const store=useStore()
+const handleSelect=(index:string)=>{
+  store.commit('CHANGE',index)
+  console.log("qqqqq",store.state.currentNavigation)
+}
 </script>
 
 <style scoped>
