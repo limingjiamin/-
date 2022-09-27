@@ -1,127 +1,71 @@
 <template>
   <el-card class="box-card">
-    <template #header>
-      <div class="card-header">
-        <span>
-          <el-icon><Search /></el-icon>
-          筛选搜索
-        </span>
-        <div>
-          <!-- 搜索按钮插槽 -->
-          <slot name="formBtn"></slot>
-        </div>
+    <div class="box">
+      <div class="box">
+        <Search style="width: 1em; height: 1em; margin-right: 8px" />
+        <h3>筛选搜索</h3>
       </div>
-    </template>
-    <div class="text item">
-      <!-- <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="输入搜索">
-          <el-input v-model="formInline.name" placeholder="商品名称"></el-input>
-        </el-form-item>
-        <el-form-item label="商品货号">
-          <el-input v-model="formInline.num" placeholder="商品货号"></el-input>
-        </el-form-item>
-        <el-form-item label="商品分类">
-          <el-cascader
-            :options="options"
-            v-model="formInline.category"
-            :show-all-levels="false"
-          />
-        </el-form-item>
-        <el-form-item label="商品品牌">
-          <el-select v-model="formInline.brand" placeholder="商品品牌">
-            <el-option label="Zone one" value="shanghai" />
-            <el-option label="Zone two" value="beijing" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="上架状态">
-          <el-select v-model="formInline.state" placeholder="上架状态">
-            <el-option label="未上架" value="0" />
-            <el-option label="已上架" value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="审核状态">
-          <el-select v-model="formInline.examine" placeholder="审核状态">
-            <el-option label="未审核" value="0" />
-            <el-option label="已审核" value="1" />
-          </el-select>
-        </el-form-item>
-      </el-form> -->
-      <slot name="form_list"></slot>
+      <div>
+        <el-button type="primary" plain>重置</el-button>
+        <el-button type="success" plain @click="search">查询结果</el-button>
+      </div>
     </div>
+    <div class="box2">
+      <slots :formInline="formInline"></slots>
+    </div>
+    {{formInline}}
   </el-card>
+
 </template>
-<script lang="ts" setup>
-import { reactive } from "vue";
+<script lang="ts">
+  import { reactive, defineComponent, toRefs, ref } from "vue";
+  import slots from `@/components/SearchView/GoodsList.vue`;
+  import $http from "@/axios/http.ts";
+  interface Search {
+    name: String
+    num: String
+    category: String
+    brand: String
+    state: String
+    examine: String
+  }
+  class FormInline {
+    formInline: Search = {
+      name: "",
+      num: "",
+      category: "",
+      brand: "",
+      state: "",
+      examine: "",
+    }
+  }
+  export default defineComponent({
+    components: { slots },
+    setup() {
+      // 将表单元素的数据来源进行接口规范，并实例化
+      const { formInline } = reactive(new FormInline());
+      //  点击确定发起ajax请求获取，表格搜索数据
+      const search = () => {
+        // 接收到数据后，暴露在vuex上，让表格获取。
+        $http("/market/advertis").then(data=>console.log(data))
+      }
+      return { formInline, search }
+    },
 
-const formInline = reactive({
-  name: "",
-  num: "",
-  category: "",
-  brand: "",
-  state: "",
-  examine: "",
-});
+  })
 
-const onSubmit = () => {
-  console.log(formInline);
-};
-const options = [
-  {
-    value: "guide",
-    label: "Guide",
-    children: [
-      {
-        value: "disciplines",
-        label: "Disciplines",
-      },
-      {
-        value: "navigation",
-        label: "Navigation",
-      },
-    ],
-  },
-  {
-    value: "component",
-    label: "Component",
-    children: [
-      {
-        value: "basic",
-        label: "Basic",
-      },
-      {
-        value: "form",
-        label: "Form",
-      },
-      {
-        value: "data",
-        label: "Data",
-      },
-      {
-        value: "notice",
-        label: "Notice",
-      },
-      {
-        value: "navigation",
-        label: "Navigation",
-      },
-      {
-        value: "others",
-        label: "Others",
-      },
-    ],
-  },
-];
+
+
 </script>
-<style>
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.el-card {
-  margin: 20px;
-}
-.el-form {
-  margin-left: 80px;
-}
+<style scoped>
+  .box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .box2 {
+    box-sizing: border-box;
+    padding: 10px;
+  }
 </style>
