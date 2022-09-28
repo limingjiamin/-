@@ -59,9 +59,9 @@
       formInline: Search = {
         order_num: "",
         account: "",
-        category: "",
         commite_time: "",
         status: "",
+        type:"",
         way: "",
       }
     }
