@@ -101,7 +101,7 @@
         //  发起请求改变数据库中marke表中推荐的状态。
         $http("/market/recommends", {
           id: pay.id,
-          recommend: paylody.recommend,
+          recommend: pay.recommend,
         }).then((data) => {
           this.http(this.page);
         });

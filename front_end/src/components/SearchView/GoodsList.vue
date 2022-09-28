@@ -18,8 +18,15 @@
     <div>
       <el-form-item label="商品品牌">
         <el-select v-model="formInline.brand" placeholder="商品品牌">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
+          <el-option label="小米" value="小米" />
+          <el-option label="七匹狼" value="七匹狼" />
+          <el-option label="海澜之家" value="海澜之家" />
+          <el-option label="苹果" value="苹果" />
+          <el-option label="华为" value="华为" />
+          <el-option label="格力" value="格力" />
+          <el-option label="方太" value="方太" />
+          <el-option label="万和" value="万和" />
+          <el-option label="OPPO" value="OPPO" />
         </el-select>
       </el-form-item>
     </div>
@@ -43,10 +50,28 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from "vue"
+  import { defineComponent, reactive, onUpdated } from "vue";
+  interface Search {
+    name: String
+    num: String
+    category: String
+    brand: String
+    state: String
+    examine: String
+  }
+  class FormInline {
+    formInline: Search = {
+      name: "",
+      num: "",
+      category: "",
+      brand: "",
+      state: "",
+      examine: "",
+    }
+  }
   export default defineComponent({
-    props: ["formInline"],
-    setup() {
+    props: ["queren"],
+    setup(props, { emit }) {
       const options = [
         {
           value: '服装',
@@ -191,8 +216,26 @@
           ]
         }
       ]
-
-      return { options }
+      const { formInline } = reactive(new FormInline());
+      // 定义自定义事件,当queren改变是发起传值
+      const que = () => {
+        emit("newarr", formInline)
+      }
+      const resetForm = () => {
+        for (let key in formInline) {
+          formInline[key as keyof typeof formInline] = "";
+        }
+      }
+      onUpdated(() => {
+        if (props.queren == 1) {
+          que();
+        }
+        if (props.queren == 3) {
+          resetForm();
+          que();
+        }
+      })
+      return { options, formInline, resetForm}
     }
   })
 </script>
