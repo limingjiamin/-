@@ -39,12 +39,12 @@
       const reset = () => {
         queren.value = 3;
       }
-      const formInline = (paylody: Object) => {
+      const formInline = (paylody={}) => {
         queren.value = 0;
         //判断其中数据是否为空，提取不为空的对象(复制的新数组)
-        let obj: Object = Object.assign({}, paylody)
+        let obj = Object.assign({}, paylody)
         for (let key in obj) {
-          if (obj[key as keyof typeof obj].toString() == "") {
+          if (obj[key as keyof typeof obj] == "") {
             delete obj[key as keyof typeof obj]
           }
         }
