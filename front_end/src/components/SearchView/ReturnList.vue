@@ -41,8 +41,8 @@
         formInline: Search = {
             id: "",
             application_time: "",
-            application_time: "",
-            branstatusd: "",
+            processing_time: "",
+            status: "",
         }
     }
     export default defineComponent({
