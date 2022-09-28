@@ -6,50 +6,55 @@
         <h3>筛选搜索</h3>
       </div>
       <div>
-        <el-button type="primary" plain>重置</el-button>
+        <el-button type="primary" plain @click="reset">重置</el-button>
         <el-button type="success" plain @click="search">查询结果</el-button>
       </div>
     </div>
     <div class="box2">
-      <slots :formInline="formInline"></slots>
+      <!-- <GoodsList :queren=queren @newarr="formInline"></GoodsList> -->
+      <!-- <BrandMan :queren=queren @newarr="formInline"></BrandMan> -->
+      <!-- <OrderList :queren=queren @newarr="formInline"></OrderList> -->
+      <ReturnList :queren=queren @newarr="formInline"></ReturnList>
     </div>
-    {{formInline}}
+
   </el-card>
 
 </template>
 <script lang="ts">
-  import { reactive, defineComponent, toRefs, ref } from "vue";
-  import slots from `@/components/SearchView/GoodsList.vue`;
-  import $http from "@/axios/http.ts";
-  interface Search {
-    name: String
-    num: String
-    category: String
-    brand: String
-    state: String
-    examine: String
-  }
-  class FormInline {
-    formInline: Search = {
-      name: "",
-      num: "",
-      category: "",
-      brand: "",
-      state: "",
-      examine: "",
-    }
-  }
+  import { reactive, defineComponent, ref } from "vue";
+  import GoodsList from "@/components/SearchView/GoodsList.vue";
+  import BrandMan from "@/components/SearchView/BrandMan.vue";
+  import OrderList from "@/components/SearchView/OrderList.vue";
+  import ReturnList from "@/components/SearchView/ReturnList.vue";
+  import $http from "@/axios/http";
   export default defineComponent({
-    components: { slots },
+    components: { GoodsList, BrandMan, OrderList, ReturnList },
     setup() {
-      // 将表单元素的数据来源进行接口规范，并实例化
-      const { formInline } = reactive(new FormInline());
-      //  点击确定发起ajax请求获取，表格搜索数据
+      let queren = ref < number > (0);
+      // 确认方法
       const search = () => {
-        // 接收到数据后，暴露在vuex上，让表格获取。
-        $http("/market/advertis").then(data=>console.log(data))
+        queren.value = 1;
       }
-      return { formInline, search }
+      // 重置按钮
+      const reset = () => {
+        queren.value = 3;
+      }
+      const formInline = (paylody: Object) => {
+        queren.value = 0;
+        //判断其中数据是否为空，提取不为空的对象(复制的新数组)
+        let obj: Object = Object.assign({}, paylody)
+        for (let key in obj) {
+          if (obj[key as keyof typeof obj].toString() == "") {
+            delete obj[key as keyof typeof obj]
+          }
+        }
+        // 判断obj是否为空,不为空,发起ajax请求获取表格搜索数据
+        if (Object.keys(obj).length != 0) {
+          // $http("/market/advertis").then(data=>console.log(data))
+          console.log("这是ajax");
+        }
+      }
+      return { search, reset, queren, formInline }
     },
 
   })
