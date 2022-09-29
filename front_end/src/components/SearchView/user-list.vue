@@ -2,22 +2,22 @@
     <el-form :model="formInline" class="demo-form-inline box">
         <div>
             <el-form-item label="输入搜索">
-                <el-input v-model="formInline.b_name" placeholder="品牌名称/关键字" style="width: 61.5%;" autocomplete="off">
+                <el-input v-model="formInline.name" placeholder="账号/姓名" style="width: 61.5%;" autocomplete="off">
                 </el-input>
             </el-form-item>
         </div>
+
     </el-form>
 </template>
-
 <script lang="ts">
     import { defineComponent, reactive, onUpdated, } from "vue";
-    import type { FormInstance } from 'element-plus';
     interface Search {
-        b_name?: String
+        name: string
+
     }
     class FormInline {
         formInline: Search = {
-            b_name: "",
+            name: "",
         }
     }
     export default defineComponent({
@@ -30,8 +30,8 @@
                 emit("newarr", formInline)
             }
             const resetForm = () => {
-                for(let key in formInline){
-                  formInline[key as keyof typeof formInline]="";
+                for (let key in formInline) {
+                    formInline[key as keyof typeof formInline] = "";
                 }
             }
             onUpdated(() => {
@@ -50,7 +50,7 @@
 <style scoped>
     .box {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         flex-wrap: wrap;
     }

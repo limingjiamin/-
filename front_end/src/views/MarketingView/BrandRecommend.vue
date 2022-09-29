@@ -102,7 +102,7 @@
         $http("/market/recommends", {
           id: pay.id,
           recommend: pay.recommend,
-        }).then((data) => {
+        }).then(() => {
           this.http(this.page);
         });
       },

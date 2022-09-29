@@ -48,12 +48,12 @@
   <script lang="ts">
     import { defineComponent, reactive, onUpdated } from "vue";
     interface Search {
-      order_num: String
-      account: String
-      commite_time: String
-      status: String
-      type: String
-      way: String
+      order_num: string
+      account: string
+      commite_time: string
+      status: string
+      type: string
+      way: string
     }
     class FormInline {
       formInline: Search = {
@@ -94,7 +94,7 @@
   <style scoped>
     .box {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       flex-wrap: wrap;
     }
