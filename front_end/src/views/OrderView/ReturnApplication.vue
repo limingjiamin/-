@@ -1,4 +1,6 @@
 <template>
+  <SearchView></SearchView>
+  <br>
   <AddView></AddView>
   <br>
   <el-table
@@ -30,7 +32,7 @@
     />
     <el-table-column align="center" label="操作" width="140">
       <template #default="scope">
-        <el-button type="primary" @click="handleEdit(scope.$index, scope.row)"
+        <el-button type="primary" @click="handleDetail(scope.row)"
           >查看详情</el-button
         >
       </template>
@@ -46,9 +48,12 @@
 import PagingView from "@/components/PagingView.vue";
 import BatchView from "@/components/BatchView.vue";
 import AddView from '@/components/AddView.vue'
+import SearchView from "@/components/SearchView.vue";
 import axios from "axios/index";
 import { Ref, ref, onBeforeMount } from "vue";
 import { ElTable } from "element-plus";
+import {useRouter} from "vue-router";
+const router=useRouter()
 interface Application {
   id: number;
   application_time: string;
@@ -91,6 +96,16 @@ onBeforeMount(() => {
     }
   });
 });
+const handleDetail=(row:Application)=>{
+  console.log(row)
+  router.push({
+    name:"return-application-detail",
+    path:'return-application-detail',
+    query:{
+      id:row.id
+    }
+  })
+}
 </script>
 
 <style scoped>

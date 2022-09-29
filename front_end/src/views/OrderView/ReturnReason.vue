@@ -95,6 +95,7 @@ import * as moment from 'moment'
 import axios from "axios/index";
 import { Ref, ref, onBeforeMount, reactive } from "vue";
 import { ElMessage, ElTable, FormInstance } from "element-plus";
+import  $http from  '@/axios/http'
 interface Order {
   id: number;
   reason: string;
@@ -113,6 +114,11 @@ const tableData: Ref<Order[]> = ref([]);
 
 // 请求渲染表格方法
 const renderTable = () => {
+  // $http("http://localhost:3000/order/return_reason",{page_num: 1, page_size: 10,},'GET').then((data)=>{
+  //   console.log(
+  //       "111111111111111111111111111111111111111",data
+  //   )
+  // })
   axios({
     url: "http://localhost:3000/order/return_reason",
     method: "get",

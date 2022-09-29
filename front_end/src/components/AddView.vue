@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <el-card class="box-card">
+    <el-card class="box-card" shadow="never">
       <div class="list">
         <el-icon><List /></el-icon>
         数据列表
@@ -14,9 +14,6 @@
 </template>
 <script></script>
 <style scoped lang="less">
-.el-card.is-always-shadow {
-   box-shadow:none;
-}
 .box {
   .box-card {
     height: 70px;

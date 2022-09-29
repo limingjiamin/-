@@ -130,7 +130,7 @@ router.get("/return_application_details",async (req,res)=>{
   if (typeof data=="string") {
     res.json({
       code: 1,
-      data: "数据库该条id的数据",
+      data: "数据库没有该条id的数据",
     });
   } else {
     res.json({

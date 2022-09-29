@@ -92,6 +92,24 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/OrderView/ReturnReason.vue"),
         meta: { isAuth: true, title: "退货原因处理" },
       },
+      {
+        path:'order-detail',
+        name:'order-detail',
+        component:()=>import("@/views/OrderView/OrderDetail.vue"),
+        meta:{isAuth:true,title:"订单详情"}
+      },
+      {
+        path:'deliver-goods',
+        name:'deliver-goods',
+        component:()=>import("@/views/OrderView/DeliverGoods.vue"),
+        meta:{isAuth:true,title:"发货信息"}
+      },
+      {
+        path:'return-application-detail',
+        name:'return-application-detail',
+        component:()=>import("@/views/OrderView/ReturnApplicationDetail.vue"),
+        meta:{isAuth:true,title:"退货详情"}
+      }
     ],
   },
   {
