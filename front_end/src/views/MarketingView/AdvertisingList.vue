@@ -102,7 +102,7 @@
         $http("/market/upper", {
           id: paylody.ad_id,
           upper: paylody.ad_upper,
-        }).then((data) => {
+        }).then(() => {
           this.http(this.page)
         });
       },

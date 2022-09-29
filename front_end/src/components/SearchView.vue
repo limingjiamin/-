@@ -11,24 +11,21 @@
       </div>
     </div>
     <div class="box2">
-      <!-- <GoodsList :queren=queren @newarr="formInline"></GoodsList> -->
-      <!-- <BrandMan :queren=queren @newarr="formInline"></BrandMan> -->
-      <!-- <OrderList :queren=queren @newarr="formInline"></OrderList> -->
-      <ReturnList :queren=queren @newarr="formInline"></ReturnList>
+      <component :is="haha" :queren=queren @newarr="formInline"></component>
     </div>
-
   </el-card>
 
 </template>
 <script lang="ts">
-  import { reactive, defineComponent, ref } from "vue";
-  import GoodsList from "@/components/SearchView/GoodsList.vue";
-  import BrandMan from "@/components/SearchView/BrandMan.vue";
-  import OrderList from "@/components/SearchView/OrderList.vue";
-  import ReturnList from "@/components/SearchView/ReturnList.vue";
+  import { defineComponent, ref ,defineAsyncComponent} from "vue";
   import $http from "@/axios/http";
   export default defineComponent({
-    components: { GoodsList, BrandMan, OrderList, ReturnList },
+    computed: {
+      haha() {
+        let name = this.$route.path.split("/")[2]
+        return defineAsyncComponent(() => import(`./SearchView/${name}.vue`));
+      }
+    },
     setup() {
       let queren = ref < number > (0);
       // 确认方法
@@ -39,7 +36,7 @@
       const reset = () => {
         queren.value = 3;
       }
-      const formInline = (paylody={}) => {
+      const formInline = (paylody = {}) => {
         queren.value = 0;
         //判断其中数据是否为空，提取不为空的对象(复制的新数组)
         let obj = Object.assign({}, paylody)
@@ -54,12 +51,10 @@
           console.log("这是ajax");
         }
       }
-      return { search, reset, queren, formInline }
+      return { search, reset, queren, formInline}
     },
 
   })
-
-
 
 </script>
 <style scoped>

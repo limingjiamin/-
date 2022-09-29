@@ -102,7 +102,7 @@
         $http("/market/recommend", {
           id: paylody.sp_id,
           recommend: paylody.recommend,
-        }).then((data) => {
+        }).then(() => {
           this.http(this.page);
         });
       },

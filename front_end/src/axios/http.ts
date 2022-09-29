@@ -1,12 +1,12 @@
 import service from "./axios";
 
 export default function http(
-  url: string = "",
+  url = "",
   data: object = {},
-  type: string = "GET"
+  type = "GET"
 ) {
   // 將参数处理一下
-  if (Object.keys(data).length != 0) {
+  if (Object.keys(data).length == 0) {
     return service({
       url,
       method: type,

@@ -1,27 +1,29 @@
 <template>
     <el-form :model="formInline" class="demo-form-inline box">
         <div>
-            <el-form-item label="活动名称">
-                <el-input v-model="formInline.titie" placeholder="活动名称" style="width: 61.5%;"></el-input>
+            <el-form-item label="输入搜索">
+                <el-input v-model="formInline.role_name" placeholder="角色名称" style="width: 61.5%;" autocomplete="off">
+                </el-input>
             </el-form-item>
         </div>
-        
+
     </el-form>
 </template>
-
 <script lang="ts">
-    import { defineComponent, reactive, onUpdated } from "vue";
+    import { defineComponent, reactive, onUpdated, } from "vue";
+
     interface Search {
-        titie: String
+        role_name: string
     }
     class FormInline {
         formInline: Search = {
-            titie: "",
+            role_name: "",
         }
     }
     export default defineComponent({
         props: ["queren"],
         setup(props, { emit }) {
+            console.log(props);
             const { formInline } = reactive(new FormInline());
             // 定义自定义事件,当queren改变是发起传值
             const que = () => {
@@ -48,7 +50,7 @@
 <style scoped>
     .box {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         flex-wrap: wrap;
     }

@@ -1,48 +1,32 @@
 <template>
     <el-form :model="formInline" class="demo-form-inline box">
         <div>
-            <el-form-item label="输入搜索">
-                <el-input v-model="formInline.id" placeholder="服务单号" style="width: 61.5%;"></el-input>
+            <el-form-item label="品牌名称">
+                <el-input v-model="formInline.b_name" placeholder="品牌名称" style="width: 61.5%;" autocomplete="off">
+                </el-input>
             </el-form-item>
         </div>
         <div>
-            <el-form-item label="处理状态">
-                <el-select v-model="formInline.status" placeholder="全部">
-                    <el-option label="待处理" value="待处理" />
-                    <el-option label="退货中" value="退货中" />
-                    <el-option label="已完成" value="已完成" />
-                    <el-option label="已拒绝" value="已拒绝" />
+            <el-form-item label="推荐状态">
+                <el-select v-model="formInline.recommend" placeholder="全部">
+                    <el-option label="未推荐" value="未推荐" />
+                    <el-option label="推荐中" value="推荐中" />
                 </el-select>
             </el-form-item>
         </div>
-        <div>
-            <el-form-item label="申请时间">
-                <el-date-picker v-model="formInline.application_time" type="date" placeholder="请选择时间" />
-            </el-form-item>
-        </div>
-        <div>
-            <el-form-item label="处理时间">
-                <el-date-picker v-model="formInline.processing_time" type="date" placeholder="请选择时间" />
-            </el-form-item>
-        </div>
-
     </el-form>
 </template>
 
 <script lang="ts">
-    import { defineComponent, reactive, onUpdated } from "vue";
+    import { defineComponent, reactive, onUpdated, } from "vue";
     interface Search {
-        id: String
-        application_time: String
-        processing_time: String
-        status: String
+        b_name: string
+        recommend: string
     }
     class FormInline {
         formInline: Search = {
-            id: "",
-            application_time: "",
-            processing_time: "",
-            status: "",
+            b_name: "",
+            recommend: ""
         }
     }
     export default defineComponent({
@@ -74,7 +58,7 @@
 <style scoped>
     .box {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         flex-wrap: wrap;
     }
