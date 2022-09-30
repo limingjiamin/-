@@ -17,7 +17,39 @@
 
 </template>
 <script lang="ts">
-  import { defineComponent, ref ,defineAsyncComponent} from "vue";
+  /*  1、引入注册组件
+ 2、使用组件时在标签上添加   @refresh="接收事件名"
+ 3、接收事件名
+ // 根据参数的类型来决定状态
+     if(typeof paylody == "object"){
+       this.state=1;//自定义的状态属性储存整个页面状态
+       this.paylody=paylody;//自定义的参数属性储存搜索的参数
+       this.search();//调用搜索的方法
+     }else{
+       this.state=0;
+       this.http();//调用普通表格数据的方法
+     }
+ 4、搜索方法
+   search() {
+     $http("/search",
+       {
+         address: this.$route.path.split("/")[2],
+         field: this.paylody,
+         page: this.page,
+       },
+       "POST").then(({data,count}) => {
+         this.$store.state.page.page_count=count;
+         this.tableData=data;
+       })
+   },
+ 5、凡是涉及到请求的都要判断模式
+     if(this.state==0){
+       this.http(this.page);
+     }else{
+       this.search(this.page);
+     }
+*/
+  import { defineComponent, ref, defineAsyncComponent } from "vue";
   import $http from "@/axios/http";
   export default defineComponent({
     computed: {
@@ -26,7 +58,7 @@
         return defineAsyncComponent(() => import(`./SearchView/${name}.vue`));
       }
     },
-    setup() {
+    setup(props, { emit }) {
       let queren = ref < number > (0);
       // 确认方法
       const search = () => {
@@ -38,22 +70,26 @@
       }
       const formInline = (paylody = {}) => {
         queren.value = 0;
-        //判断其中数据是否为空，提取不为空的对象(复制的新数组)
-        let obj = Object.assign({}, paylody)
-        for (let key in obj) {
-          if (obj[key as keyof typeof obj] == "") {
-            delete obj[key as keyof typeof obj]
+        if (typeof paylody == "object") {
+          //判断其中数据是否为空，提取不为空的对象(复制的新数组)
+          let obj = Object.assign({}, paylody)
+          for (let key in obj) {
+            if (obj[key as keyof typeof obj] == "") {
+              delete obj[key as keyof typeof obj]
+            }
           }
-        }
-        // 判断obj是否为空,不为空,发起ajax请求获取表格搜索数据
-        if (Object.keys(obj).length != 0) {
-          // $http("/market/advertis").then(data=>console.log(data))
-          console.log("这是ajax");
+          // 判断obj是否为空,不为空,向父元素暴露一个指令，告诉父元素可以刷新表格了
+          if (Object.keys(obj).length != 0) {
+            emit("refresh", obj)
+          } else {
+            alert("请选择您的条件！主人");
+          }
+        } else {
+          emit("refresh", "empty")
         }
       }
-      return { search, reset, queren, formInline}
+      return { search, reset, queren, formInline }
     },
-
   })
 
 </script>
