@@ -1,4 +1,6 @@
 <template>
+  <SearchView></SearchView>
+  <br>
   <AddView></AddView>
   <br>
   <el-table
@@ -29,7 +31,7 @@
     />
     <el-table-column align="center" label="操作" width="250">
       <template #default="scope">
-        <el-button @click="handleEdit(scope.$index, scope.row)"
+        <el-button @click="handleEdit(scope.row)"
           >查看订单</el-button
         >
         <el-button
@@ -41,7 +43,7 @@
         <el-button
           v-else-if="scope.row.status === '待发货'"
           type="primary"
-          @click="handleDelete(scope.$index, scope.row)"
+          @click="handleDeliver(scope.row)"
           >订单发货</el-button
         >
         <el-button
@@ -111,6 +113,9 @@ import { ElMessage, ElTable } from "element-plus";
 import AddView from '@/components/AddView.vue'
 import PagingView from "@/components/PagingView.vue";
 import BatchView from "@/components/BatchView.vue";
+import SearchView from "@/components/SearchView.vue";
+import {useRouter} from "vue-router";
+const router=useRouter()
 interface Order {
   id: number;
   order_num: string;
@@ -212,9 +217,25 @@ onBeforeMount(() => {
   renderTable();
 });
 
-const handleEdit = (index: number, row: Order) => {
-  console.log(index, row);
+// 查看订单
+const handleEdit = ( row: Order) => {
+  router.push({
+    name:'order-detail',
+    path:'order-detail',
+    query:{
+      id:row.id
+    }
+  });
 };
+const handleDeliver=(row:Order)=>{
+  router.push({
+    name:'deliver-goods',
+    path:'deliver-goods',
+    query:{
+      id:row.id
+    }
+  })
+}
 </script>
 
 <style scoped>

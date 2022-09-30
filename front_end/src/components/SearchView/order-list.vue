@@ -44,7 +44,7 @@
       </div>
     </el-form>
   </template>
-  
+
   <script lang="ts">
     import { defineComponent, reactive, onUpdated } from "vue";
     interface Search {
@@ -98,7 +98,7 @@
       align-items: center;
       flex-wrap: wrap;
     }
-  
+
     .box>div {
       width: 33%
     }

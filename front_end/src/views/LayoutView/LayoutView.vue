@@ -29,4 +29,7 @@ import HeaderView from "@/components/HeaderView.vue";
   justify-content: space-between;
   align-items: center;
 }
+.el-aside{
+  background-color: #304156;
+}
 </style>

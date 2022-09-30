@@ -5,7 +5,7 @@
                 <el-input v-model="formInline.titie" placeholder="活动名称" style="width: 61.5%;"></el-input>
             </el-form-item>
         </div>
-        
+
     </el-form>
 </template>
 

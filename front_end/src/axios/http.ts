@@ -1,9 +1,9 @@
 import service from "./axios";
 
 export default function http(
-  url = "",
+  url: string = "",
   data: object = {},
-  type = "GET"
+  type: string = "GET"
 ) {
   // 將参数处理一下
   if (Object.keys(data).length == 0) {
