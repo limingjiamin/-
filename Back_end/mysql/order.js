@@ -113,7 +113,7 @@ class order {
             return "请选择订单id为${id}的配送方式";
         if (logistics == undefined || logistics == "")
             return `请输入订单id为${id}的物流单号`;
-        sql = `update ${table} set delivery='${delivery}',logistics='${logistics}' where id=${id}`;
+        sql = `update ${table} set delivery='${delivery}',logistics='${logistics}',status='已发货' where id=${id}`;
         return new Promise((resolve) => {
             pool.query(sql, (err, result) => {
                 if (err) throw err;

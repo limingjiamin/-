@@ -1,4 +1,9 @@
 <template>
+  <AddView>
+    <template v-slot:name>
+      <span >订单设置</span>
+    </template>
+  </AddView>
   <div class="setting-form">
     <el-form
       ref="orderSetting"
@@ -68,6 +73,7 @@
 </template>
 
 <script lang="ts" setup>
+import AddView from "@/components/AddView.vue"
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import axios from "axios/index";
@@ -179,9 +185,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
 </script>
 <style scoped>
 .setting-form {
-  width: 600px;
-  margin: 15px auto;
-  padding: 60px;
+  margin: 15px 0;
+  padding: 60px 300px;
   border: 1px solid #e6e6e6;
 }
 

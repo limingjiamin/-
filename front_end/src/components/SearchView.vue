@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card" shadow="never">
     <div class="box">
       <div class="box">
         <Search style="width: 1em; height: 1em; margin-right: 8px" />

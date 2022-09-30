@@ -1,7 +1,11 @@
 <template>
   <SearchView></SearchView>
   <br>
-  <AddView></AddView>
+  <AddView>
+    <template v-slot:name>
+      <span >数据列表</span>
+    </template>
+  </AddView>
   <br>
   <el-table
     ref="multipleTableRef"
@@ -32,7 +36,7 @@
     />
     <el-table-column align="center" label="操作" width="140">
       <template #default="scope">
-        <el-button type="primary" @click="handleDetail(scope.row)"
+        <el-button type="primary" @click="handleDetail(scope.row)" plain
           >查看详情</el-button
         >
       </template>

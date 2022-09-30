@@ -1,6 +1,11 @@
 <template>
   <AddView>
-    <el-button type="primary" @click="handleAdd(true)">添加</el-button>
+    <template v-slot:name>
+      <span >数据列表</span>
+    </template>
+    <template v-slot:btn>
+      <el-button type="primary" @click="handleAdd(true)" plain>添加</el-button>
+    </template>
   </AddView>
   <br>
 <!--  表格-->
@@ -29,10 +34,10 @@
     />
     <el-table-column align="center" label="操作">
       <template #default="scope">
-        <el-button type="primary" @click="handleEdit(scope.row, true)"
+        <el-button type="primary" @click="handleEdit(scope.row, true)" plain
           >编辑</el-button
         >
-        <el-button type="danger" @click="handleDelete(scope.row, true)"
+        <el-button type="danger" @click="handleDelete(scope.row, true)" plain
           >删除</el-button
         >
       </template>
@@ -77,11 +82,10 @@
         <el-switch v-model="editForm.status" />
       </el-form-item>
     </el-form>
-
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="confirmForm(false)">确认</el-button>
-        <el-button @click="editDialog = false">取消</el-button>
+        <el-button type="primary" @click="confirmForm(false)" >确认</el-button>
+        <el-button @click="editDialog = false" >取消</el-button>
       </span>
     </template>
   </el-dialog>
