@@ -1,9 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-     <search>
-      
-     </search>
+      <SearchView @refresh="refresh"></SearchView>
       <el-main>
         <el-table :data="tableData" border style="width: 100%" @selection-change="xuan">
           <el-table-column type="selection" align="center" />
@@ -58,10 +56,10 @@
   import $http from "@/axios/index";
   import pag from "@/components/PagingView.vue";
   import batch from "@/components/BatchView.vue";
-  import search from "@/components/SearchView.vue";
+  import SearchView from "@/components/SearchView.vue";
   export default {
     name: "AdvertisingList",
-    components: { pag, batch ,search},
+    components: { pag, batch, SearchView },
     created() {
       this.page = this.$store.state.page;
       this.batch = this.$store.state.batch;
@@ -76,26 +74,67 @@
         dia_from: {},
         del_id: 0,
         batch: {},
+        state: 0,
+        paylody: "",
       };
     },
     methods: {
       http(param) {
         $http("/market/advertis", param).then((data) => {
-          data.data.forEach((elem) => {
-            if (elem.ad_upper == "0") {
-              elem.ad_upper = false;
-            } else {
-              elem.ad_upper = true;
-            }
-            elem.time =
-              "开始时间 : " +
-              elem.s_time.slice(0, -5).replace("T", " ") +
-              "结束时间 : " +
-              elem.e_time.slice(0, -5).replace("T", " ");
-          });
+          if (data.data.length != 0) {
+            data.data.forEach((elem) => {
+              if (elem.ad_upper == "0") {
+                elem.ad_upper = false;
+              } else {
+                elem.ad_upper = true;
+              }
+              elem.time =
+                "开始时间 : " +
+                elem.s_time.slice(0, -5).replace("T", " ") +
+                "结束时间 : " +
+                elem.e_time.slice(0, -5).replace("T", " ");
+            });
+          }
           this.tableData = data.data;
           this.page.page_count = data.count;
         });
+      },
+      search() {
+        $http("/search",
+          {
+            address: this.$route.path.split("/")[2],
+            field: this.paylody,
+            page: this.page,
+          },
+          "POST").then(({ data, count }) => {
+            this.$store.state.page.page_count = count;
+            if (data.length > 0) {
+              data.data.forEach((elem) => {
+                if (elem.ad_upper == "0") {
+                  elem.ad_upper = false;
+                } else {
+                  elem.ad_upper = true;
+                }
+                elem.time =
+                  "开始时间 : " +
+                  elem.s_time.slice(0, -5).replace("T", " ") +
+                  "结束时间 : " +
+                  elem.e_time.slice(0, -5).replace("T", " ");
+              });
+            }
+            this.tableData = data;
+          })
+      },
+      refresh(paylody) {
+        // 根据paylody的类型来决定状态
+        if (typeof paylody == "object") {
+          this.state = 1;
+          this.paylody = paylody;
+          this.search()
+        } else {
+          this.state = 0;
+          this.http();
+        }
       },
       meg(paylody) {
         //  发起请求改变数据库中marke表中上线的状态。
@@ -103,7 +142,11 @@
           id: paylody.ad_id,
           upper: paylody.ad_upper,
         }).then(() => {
-          this.http(this.page)
+          if (this.state == 0) {
+            this.http(this.page);
+          } else {
+            this.search(this.page);
+          }
         });
       },
       delect(pay) {
@@ -116,7 +159,7 @@
         //发起ajax请求删除数据
         $http("/market/advertis_delete", { id: this.del_id }).then((data) => {
           if (data.code != 400) {
-            this.http();
+            this.page.page_count--;
           }
         });
       },
@@ -124,7 +167,7 @@
         // 跳到编辑页面
         this.$router.push({
           path: "advertis-update",
-          query: {id:pay.ad_id},
+          query: { id: pay.ad_id },
         });
       },
       xuan(value) {
@@ -137,7 +180,11 @@
     watch: {
       page: {
         handler: function () {
-          this.http(this.page);
+          if (this.state == 0) {
+            this.http(this.page);
+          } else {
+            this.search(this.page);
+          }
         },
         deep: true,
       },
@@ -145,7 +192,11 @@
         handler: function (value) {
           if (value) {
             // 发起ajax请求
-            this.http(this.page);
+            if (this.state == 0) {
+              this.http(this.page);
+            } else {
+              this.search(this.page);
+            }
             // 释放vuex.batch 恢复原来的样式
             this.$store.state.batch.change_num = [];
             this.$store.state.batch.change_ajax = false;
@@ -158,10 +209,6 @@
 </script>
 
 <style scoped>
-  .yanse {
-    background: rgb(0, 229, 255);
-  }
-
   .wei {
     display: flex;
     align-items: center;

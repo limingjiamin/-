@@ -218,8 +218,12 @@
       ]
       const { formInline } = reactive(new FormInline());
       // 定义自定义事件,当queren改变是发起传值
-      const que = () => {
-        emit("newarr", formInline)
+      const que = (qq: number) => {
+        if (qq == 1) {
+          emit("newarr", formInline)
+        } else {
+          emit("newarr", "reset")
+        }
       }
       const resetForm = () => {
         for (let key in formInline) {
@@ -228,14 +232,14 @@
       }
       onUpdated(() => {
         if (props.queren == 1) {
-          que();
+          que(1);
         }
         if (props.queren == 3) {
           resetForm();
-          que();
+          que(0);
         }
       })
-      return { options, formInline, resetForm}
+      return { options, formInline, resetForm }
     }
   })
 </script>

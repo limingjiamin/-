@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header class="yanse">用来存放{{ }}和数据列表</el-header>
+      <SearchView @refresh="refresh"></SearchView>
       <el-main>
         <el-table :data="tableData" border style="width: 100%" @selection-change="xuan">
           <el-table-column type="selection" align="center" width="100" />
@@ -62,9 +62,10 @@
   import $http from "@/axios/index";
   import pag from "@/components/PagingView.vue";
   import batch from "@/components/BatchView.vue";
+  import SearchView from "@/components/SearchView.vue";
   export default {
     name: "PopularRecommend",
-    components: { pag, batch },
+    components: { pag, batch, SearchView },
     created() {
       this.page = this.$store.state.page;
       this.batch = this.$store.state.batch;
@@ -78,21 +79,25 @@
         dialog: false,
         dia_from: "",
         del_id: 0,
-        batch: {}
+        batch: {},
+        state: 0,
+        paylody: "",
       };
     },
     methods: {
       http(param) {
         $http("/market/pro_product", param, "POST").then((data) => {
-          data.data.forEach((elem) => {
-            if (elem.recommend == "0") {
-              elem.recommend = false;
-              elem.state = "未推荐"
-            } else {
-              elem.recommend = true;
-              elem.state = "推荐中"
-            }
-          });
+          if (data.data.length != 0) {
+            data.data.forEach((elem) => {
+              if (elem.recommend == "0") {
+                elem.recommend = false;
+                elem.state = "未推荐"
+              } else {
+                elem.recommend = true;
+                elem.state = "推荐中"
+              }
+            });
+          }
           this.tableData = data.data;
           this.page.page_count = data.count;
         });
@@ -103,8 +108,46 @@
           id: paylody.id,
           recommend: paylody.recommend,
         }).then(() => {
-          this.http(this.page);
+          if (this.state == 0) {
+            this.http(this.page);
+          } else {
+            this.search(this.page);
+          }
         });
+      },
+      search() {
+        $http("/search",
+          {
+            address: this.$route.path.split("/")[2],
+            field: this.paylody,
+            page: this.page,
+          },
+          "POST").then(({ data, count }) => {
+            this.$store.state.page.page_count = count;
+            if (data.length > 0) {
+              data.forEach((elem) => {
+                if (elem.recommend == "0") {
+                  elem.recommend = false;
+                  elem.state = "未推荐"
+                } else {
+                  elem.recommend = true;
+                  elem.state = "推荐中"
+                }
+              });
+            }
+            this.tableData = data;
+          })
+      },
+      refresh(paylody) {
+        // 根据paylody的类型来决定状态
+        if (typeof paylody == "object") {
+          this.state = 1;
+          this.paylody = paylody;
+          this.search()
+        } else {
+          this.state = 0;
+          this.http();
+        }
       },
       delect(pay) {
         // 1.弹出确定对话框，提示用户
@@ -132,7 +175,11 @@
           sort: this.dia_from.sort
         }).then((data) => {
           if (data.code != 400) {
-            this.http(this.page);
+            if (this.state == 0) {
+              this.http(this.page);
+            } else {
+              this.search(this.page);
+            }
           }
         })
       },
@@ -146,7 +193,11 @@
     watch: {
       page: {
         handler: function () {
-          this.http(this.page);
+          if (this.state == 0) {
+              this.http(this.page);
+            } else {
+              this.search(this.page);
+            }
         },
         deep: true,
       },
@@ -154,7 +205,11 @@
         handler: function (value) {
           if (value) {
             // 发起ajax请求
-            this.http(this.page);
+            if (this.state == 0) {
+              this.http(this.page);
+            } else {
+              this.search(this.page);
+            }
             // 释放vuex.batch 恢复原来的样式
             this.$store.state.batch.change_num = "";
             this.$store.state.batch.change_ajax = false;
@@ -167,10 +222,6 @@
 </script>
 
 <style scoped>
-  .yanse {
-    background: rgb(0, 229, 255);
-  }
-
   .wei {
     display: flex;
     align-items: center;

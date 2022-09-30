@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header class="yanse">用来存放{{ page }}和数据列表</el-header>
+      <SearchView @refresh="refresh"></SearchView>
       <el-main>
         <el-table :data="tableData" border style="width: 100%">
           <el-table-column type="selection" align="center" />
@@ -45,9 +45,10 @@
 <script>
   import $http from "@/axios/index";
   import pag from "@/components/PagingView.vue";
+  import SearchView from "@/components/SearchView.vue";
   export default {
     name: "CouponList",
-    components: { pag },
+    components: { pag, SearchView },
     created() {
       this.page = this.$store.state.page;
       this.http({});
@@ -60,25 +61,65 @@
         dialog: false,
         dia_from: {},
         del_id: 0,
+        state: 0,
+        paylody: "",
       };
     },
     methods: {
       http(param) {
         $http("/market/coupon", param).then((data) => {
-          data.data.forEach((elem) => {
-            if (elem.cou_states == "0") {
-              elem.cou_states = "已过期";
-            } else {
-              elem.cou_states = "未过期";
-            }
-            elem.cou_thres = "满" + elem.cou_thres + "元可用";
-            elem.s_time = elem.s_time.substring(0, 10);
-            elem.e_time = elem.e_time.substring(0, 10);
-            elem.time = elem.s_time + "至" + elem.e_time;
-          });
+          if (data.data.length != 0) {
+            data.data.forEach((elem) => {
+              if (elem.cou_states == "0") {
+                elem.cou_states = "已过期";
+              } else {
+                elem.cou_states = "未过期";
+              }
+              elem.cou_thres = "满" + elem.cou_thres + "元可用";
+              elem.s_time = elem.s_time.substring(0, 10);
+              elem.e_time = elem.e_time.substring(0, 10);
+              elem.time = elem.s_time + "至" + elem.e_time;
+            });
+          }
           this.tableData = data.data;
           this.page.page_count = data.count;
         });
+      },
+      search() {
+        $http("/search",
+          {
+            address: this.$route.path.split("/")[2],
+            field: this.paylody,
+            page: this.page,
+          },
+          "POST").then(({ data, count }) => {
+            this.$store.state.page.page_count = count;
+            if (data.length != 0) {
+              data.forEach((elem) => {
+                if (elem.cou_states == "0") {
+                  elem.cou_states = "已过期";
+                } else {
+                  elem.cou_states = "未过期";
+                }
+                elem.cou_thres = "满" + elem.cou_thres + "元可用";
+                elem.s_time = elem.s_time.substring(0, 10);
+                elem.e_time = elem.e_time.substring(0, 10);
+                elem.time = elem.s_time + "至" + elem.e_time;
+              });
+            }
+            this.tableData = data;
+          })
+      },
+      refresh(paylody) {
+        // 根据paylody的类型来决定状态
+        if (typeof paylody == "object") {
+          this.state = 1;
+          this.paylody = paylody;
+          this.search()
+        } else {
+          this.state = 0;
+          this.http();
+        }
       },
       examine(pay) {
         // 跳转到其他界面
@@ -105,7 +146,6 @@
       },
       edit(pay) {
         // 跳转到其他界面
-
         this.$router.push({
           path: "coupon-update",
           query: {
@@ -117,7 +157,11 @@
     watch: {
       page: {
         handler: function () {
-          this.http(this.page);
+          if (this.state == 0) {
+            this.http(this.page);
+          } else {
+            this.search(this.page);
+          }
         },
         deep: true,
       },
@@ -126,10 +170,6 @@
 </script>
 
 <style scoped>
-  .yanse {
-    background: rgb(0, 229, 255);
-  }
-
   .wei {
     display: flex;
     align-items: center;
