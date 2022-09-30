@@ -1,30 +1,32 @@
 <template>
-  <div class="box">
-    <el-card class="box-card" shadow="never">
-      <div class="list">
-        <el-icon><List /></el-icon>
-        数据列表
+  <el-card shadow="never">
+    <div class="box">
+      <div class="item">
+        <el-icon>
+          <List/>
+        </el-icon>
+        <slot name="name"></slot>
       </div>
-      <div class="btn">
-        <slot></slot>
-        <!-- <el-button>添加</el-button> -->
+      <div>
+        <slot name="btn"></slot>
       </div>
-    </el-card>
-  </div>
+    </div>
+  </el-card>
 </template>
-<script></script>
 <style scoped lang="less">
 .box {
-  .box-card {
-    height: 70px;
-    .list {
-      float: left;
-      margin: 6px;
-    }
-    .btn {
-      float: right;
-      margin: 0 2px;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .el-icon {
+    font-size: 18px
   }
 }
 </style>

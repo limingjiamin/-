@@ -1,7 +1,11 @@
 <template>
   <SearchView></SearchView>
   <br>
-  <AddView></AddView>
+  <AddView>
+    <template v-slot:name>
+      <span >数据列表</span>
+    </template>
+  </AddView>
   <br>
   <el-table
     ref="multipleTableRef"
@@ -38,24 +42,28 @@
           v-if="scope.row.status === '已关闭'"
           @click="handleDelete(scope.row, true)"
           type="danger"
+          plain
           >删除订单</el-button
         >
         <el-button
           v-else-if="scope.row.status === '待发货'"
           type="primary"
           @click="handleDeliver(scope.row)"
+          plain
           >订单发货</el-button
         >
         <el-button
           v-else-if="scope.row.status === '已完成'"
           type="success"
           @click="orderTrackingDialog = true"
+          plain
           >订单跟踪</el-button
         >
         <el-button
           v-else-if="scope.row.status === '已发货'"
           type="success"
           @click="orderTrackingDialog = true"
+          plain
           >订单跟踪</el-button
         >
       </template>
@@ -232,7 +240,12 @@ const handleDeliver=(row:Order)=>{
     name:'deliver-goods',
     path:'deliver-goods',
     query:{
-      id:row.id
+      id:row.id,
+      num:row.order_num,
+      name:row.name,
+      phone:row.phone,
+      postal_code:row.postal_code,
+      address:row.address
     }
   })
 }
