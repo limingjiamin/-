@@ -2,8 +2,18 @@
   <div class="common-layout">
     <el-container>
       <SearchView @refresh="refresh"></SearchView>
+      <AddView style="margin-top: 20px;">
+        <template #name>
+          <p>数据列表</p>
+        </template>
+        <template #btn>
+          <div>
+            <el-button color="#f01af9" :dark="isDark" plain @click="add">添加</el-button>
+          </div>
+        </template>
+      </AddView>
       <el-main>
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table :data="tableData" border style="width: 100%" :row-style="asd" :header-row-style="asd">
           <el-table-column type="selection" align="center" />
           <el-table-column prop="cou_num" label="编号" align="center" width="80" />
           <el-table-column prop="cou_titie" label="优惠卷名称" align="center" width="140" />
@@ -46,9 +56,10 @@
   import $http from "@/axios/index";
   import pag from "@/components/PagingView.vue";
   import SearchView from "@/components/SearchView.vue";
+  import AddView from "@/components/AddView.vue";
   export default {
     name: "CouponList",
-    components: { pag, SearchView },
+    components: { pag, SearchView,AddView },
     created() {
       this.page = this.$store.state.page;
       this.http({});
@@ -63,6 +74,9 @@
         del_id: 0,
         state: 0,
         paylody: "",
+        asd: {
+          height: 60 + "px",
+        },
       };
     },
     methods: {

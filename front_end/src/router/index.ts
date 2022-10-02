@@ -1,11 +1,11 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import LayoutView from "@/views/LayoutView/LayoutView.vue";
 const routes: Array<RouteRecordRaw> = [
-    {
-      path:'/',
-      redirect:'/home'
-    },
-    {
+  {
+    path: "/",
+    redirect: "/home",
+  },
+  {
     path: "/",
     component: LayoutView,
     children: [
@@ -93,23 +93,24 @@ const routes: Array<RouteRecordRaw> = [
         meta: { isAuth: true, title: "退货原因处理" },
       },
       {
-        path:'order-detail',
-        name:'order-detail',
-        component:()=>import("@/views/OrderView/OrderDetail.vue"),
-        meta:{isAuth:true,title:"订单详情"}
+        path: "order-detail",
+        name: "order-detail",
+        component: () => import("@/views/OrderView/OrderDetail.vue"),
+        meta: { isAuth: true, title: "订单详情" },
       },
       {
-        path:'deliver-goods',
-        name:'deliver-goods',
-        component:()=>import("@/views/OrderView/DeliverGoods.vue"),
-        meta:{isAuth:true,title:"发货信息"}
+        path: "deliver-goods",
+        name: "deliver-goods",
+        component: () => import("@/views/OrderView/DeliverGoods.vue"),
+        meta: { isAuth: true, title: "发货信息" },
       },
       {
-        path:'return-application-detail',
-        name:'return-application-detail',
-        component:()=>import("@/views/OrderView/ReturnApplicationDetail.vue"),
-        meta:{isAuth:true,title:"退货详情"}
-      }
+        path: "return-application-detail",
+        name: "return-application-detail",
+        component: () =>
+          import("@/views/OrderView/ReturnApplicationDetail.vue"),
+        meta: { isAuth: true, title: "退货详情" },
+      },
     ],
   },
   {
@@ -166,6 +167,12 @@ const routes: Array<RouteRecordRaw> = [
         name: "spike-time",
         component: () => import("@/views/MarketingView/SpikeTime.vue"),
         meta: { isAuth: true, title: "秒杀时间" },
+      },
+      {
+        path: "spike-times",
+        name: "spike-times",
+        component: () => import("@/views/MarketingView/SeckTimes.vue"),
+        meta: { isAuth: true, title: "秒杀时间表" },
       },
       {
         path: "coupon-history",

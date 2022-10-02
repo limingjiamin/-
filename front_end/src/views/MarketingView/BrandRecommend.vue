@@ -2,6 +2,16 @@
   <div class="common-layout">
     <el-container>
       <SearchView @refresh="refresh"></SearchView>
+      <AddView style="margin-top: 20px;">
+        <template #name>
+          <p>数据列表</p>
+        </template>
+        <template #btn>
+          <div>
+            <el-button color="#626aef" :dark="isDark" plain @click="select">选择品牌</el-button>
+          </div>
+        </template>
+      </AddView>
       <el-main>
         <el-table :data="tableData" border style="width: 100%" @selection-change="xuan">
           <el-table-column type="selection" align="center" width="100" />
@@ -49,6 +59,30 @@
             </span>
           </template>
         </el-dialog>
+
+        <el-dialog v-model="dialogs" title="选择品牌" width="38%" align="left">
+          <el-input v-model="dia_search.search" placeholder="品牌名称搜索" style="width: 300px;">
+            <template #append>
+              <el-button :icon="dia_search.Search" @click="sear(dia_search.search)"></el-button>
+            </template>
+          </el-input>
+          <el-table :data="dia_search.tableData" border style="width: 100%;margin-top: 30px;" @selection-change="xuan"
+            :row-style="asd" :header-row-style="asd">
+            <el-table-column type="selection" align="center" width="100" />
+            <el-table-column prop="b_name" label="品牌名称" align="center" width="250" />
+            <el-table-column prop="counts" label="相关" align="center" width="250" />
+          </el-table>
+          <div style="display:flex; justify-content: flex-end; margin-top: 30px;">
+            <el-pagination background layout="prev, pager, next" :total="dia_search.page.page_count"
+              :page-size="dia_search.page.page_size" @current-change="handleCurrentChange" />
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogs = false">取消</el-button>
+              <el-button type="primary">确定</el-button>
+            </span>
+          </template>
+        </el-dialog>
       </el-main>
       <el-footer class="pag_wei">
         <batch />
@@ -63,9 +97,11 @@
   import pag from "@/components/PagingView.vue";
   import batch from "@/components/BatchView.vue";
   import SearchView from "@/components/SearchView.vue";
+  import AddView from "@/components/AddView.vue";
+  import { Search } from '@element-plus/icons-vue'
   export default {
     name: "BrandRecommend",
-    components: { pag, batch, SearchView },
+    components: { pag, batch, SearchView, AddView },
     created() {
       this.page = this.$store.state.page;
       this.batch = this.$store.state.batch;
@@ -77,11 +113,28 @@
         tableData: [],
         dialogVisible: false,
         dialog: false,
+        dialogs: false,
         dia_from: "",
+        dia_search: {
+          Search,
+          search: "",
+          tableData: [],
+          page: {
+            page_size: 5,
+            page_count: 0,
+            page_num: 1,
+          },
+          state: 0,
+          pay: ""
+        },
         del_id: 0,
         batch: {},
         state: 0,
         paylody: "",
+        asd: {
+          height: 60 + "px",
+          fontSize: 16 + "px",
+        },
       };
     },
     methods: {
@@ -189,7 +242,43 @@
         value.forEach(elem => arr.push(elem.id));
         console.log(arr);
         this.$store.state.batch.change_num = arr
+      },
+      select() {
+        this.dialogs = true;
+        this.dia_search.tableData.length = [];
+        this.https();
+      },
+      https() {
+        $http("/market/seckill_select", this.dia_search.page).then(({ data, count }) => {
+          data.forEach(elem => elem.counts = "商品数量: " + elem.counts)
+          this.dia_search.page.page_count = count;
+          this.dia_search.tableData = data;
+        })
+      },
+      https_search() {
+        $http("/market/seckill_select_search", {
+          page: this.dia_search.page,
+          search: this.dia_search.pay,
+        }).then(({ data, count }) => {
+          data.forEach(elem => elem.counts = "商品数量: " + elem.counts)
+          this.dia_search.page.page_count = count;
+          this.dia_search.tableData = data;
+        })
+      },
+      handleCurrentChange(value) {
+        this.dia_search.page.page_num = value;
+        if (this.dia_search.state) {
+          this.https_search();
+        } else {
+          this.https();
+        }
+      },
+      sear(pay) {
+        this.dia_search.state = 1;
+        this.dia_search.pay = pay;
+        this.https_search(pay);
       }
+
     },
     watch: {
       page: {

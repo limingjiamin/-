@@ -199,7 +199,21 @@ class marketing {
       });
     });
   }
-
+  seckill_add(table, param) {
+    let { upper_line, titie, s_time, e_time } = param;
+    if (upper_line == undefined || upper_line == "") return "请输入订单状态";
+    if (titie == undefined || titie == "") return "请输入订单标题";
+    if (s_time == undefined || s_time == "") return "请输入订单开始时间";
+    if (e_time == undefined || e_time == "") return "请输入订单结束时间";
+    let num = parseInt(Math.random() * (99999 - 10000 + 1) + 10000);
+    sql = `insert into ${table} set upper_line='${upper_line}',titie='${titie}',s_time='${s_time}',e_time='${e_time}',num='${num}',state='活动未开始';`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   //  秒杀表格删除
   seckill_delete(table, param) {
     let { id } = param;
@@ -336,11 +350,131 @@ class marketing {
   advertis_select(table, param) {
     let { id } = param;
     if (id == undefined || id == "") return "请输入id";
-    sql=`select *from ${table} where ad_id=${id}`;
+    sql = `select *from ${table} where ad_id=${id}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
         resolve(result);
+      });
+    });
+  }
+  times() {
+    sql = "select * from seclill_time";
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  times_add(param) {
+    let { titie, e_time, s_time, statas } = param;
+    if (titie == undefined || titie == "") return "请输入标题名称";
+    if (e_time == undefined || e_time == "") return "请输入结束时间";
+    if (s_time == undefined || s_time == "") return "请输入开始时间";
+    if (statas == undefined || statas == "") return "请输入状态";
+    let num = parseInt(Math.random() * (99999 - 10000 + 1) + 10000);
+    e_time = e_time.slice(11, 19);
+    s_time = s_time.slice(11, 19);
+    sql = `insert into seclill_time set titie='${titie}',e_time='${e_time}',s_time='${s_time}',statas='${statas}',num=${num};`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  times_meg(param) {
+    let { statas, id } = param;
+    if (statas == undefined || statas == "") return "请输入状态";
+    if (id == undefined || id == "") return "请输入id";
+    statas = statas == "true" ? 1 : 0;
+    sql = `update seclill_time set statas=${statas} where id=${id};`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  times_edit(param) {
+    let { titie, e_time, s_time, statas, id } = param;
+    if (id == undefined || id == "") return "请输入id";
+    e_time = e_time.slice(11, 19);
+    s_time = s_time.slice(11, 19);
+    sql = `update seclill_time set titie='${titie}',e_time='${e_time}',s_time='${s_time}',statas='${statas}'where id=${id};`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  times_del(param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入id";
+    sql = `delete from seclill_time where id=${id};`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  seckill_select(parameter) {
+    let count =
+      parameter.page_size == undefined || parameter.page_size == ""
+        ? 5
+        : parameter.page_size;
+    let state =
+      parameter.page_num == undefined || parameter.page_num == ""
+        ? 0
+        : (parameter.page_num - 1) * parameter.page_size;
+    sql = `select id, b_name,count(1) counts from (select a.id,a.b_name from brand a left join commodity b on a.id=b.p_brand) c  group  by id limit ${state},${count};`;
+    let sql2 = "select count(*) counts from brand";
+    let arr = [];
+    return new Promise((resolve) => {
+      pool.query(sql2, (err, result) => {
+        if (err) throw err;
+        if (result[0].counts > 0) {
+          arr.push(result[0].counts);
+          pool.query(sql, (err, result) => {
+            if (err) throw err;
+            arr.push(result);
+            resolve(arr);
+          });
+        } else {
+          resolve(arr);
+        }
+      });
+    });
+  }
+  seckill_select_search(param) {
+    let { page, search } = param;
+    let count =
+      page.page_size == undefined || page.page_size == ""
+        ? 5
+        : parameter.page_size;
+    let state =
+      page.page_num == undefined || page.page_num == ""
+        ? 0
+        : (page.page_num - 1) * page.page_size;
+    sql = `select id, b_name,count(1) counts from (select a.id,a.b_name from brand a left join commodity b on a.id=b.p_brand) c where b_name regexp '${search}' group by id limit ${state},${count};`;
+    let sql2 = `select count(*) counts from brand where b_name regexp '${search}';`;
+    let arr = [];
+    return new Promise((resolve) => {
+      pool.query(sql2, (err, result) => {
+        if (err) throw err;
+        if (result[0].counts > 0) {
+          arr.push(result[0].counts);
+          pool.query(sql, (err, result) => {
+            if (err) throw err;
+            arr.push(result);
+            resolve(arr);
+          });
+        } else {
+          resolve(arr);
+        }
       });
     });
   }
