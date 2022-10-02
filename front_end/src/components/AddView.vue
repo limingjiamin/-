@@ -2,10 +2,10 @@
   <el-card shadow="never">
     <div class="box">
       <div class="item">
-        <el-icon>
+        <el-icon style="margin-right: 10px;">
           <List/>
         </el-icon>
-        <slot name="name"></slot>
+        <slot name="name" ></slot>
       </div>
       <div>
         <slot name="btn"></slot>

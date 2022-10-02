@@ -133,6 +133,27 @@ router.get("/seckill_edit", async (req, res) => {
   }
 });
 
+router.get("/seckill_add", async (req, res) => {
+  let data = await mysql.seckill_add("seckill", req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "添加成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `添加失败`,
+      });
+    }
+  }
+});
 // 秒杀活动删除
 router.get("/seckill_delete", async (req, res) => {
   let data = await mysql.seckill_delete("seckill", req.query);
@@ -476,6 +497,33 @@ router.get("/sorts", async (req, res) => {
   }
 });
 
+router.get("/seckill_select", async (req, res) => {
+  let data = await mysql.seckill_select(req.query);
+  if (data.length != 0) {
+    res.json({
+      code: 200,
+      count: data[0],
+      data: data[1],
+    });
+  }
+});
+
+router.get("/seckill_select_search", async (req, res) => {
+  let data = await mysql.seckill_select_search(req.query);
+  if (data.length != 0) {
+    res.json({
+      code: 200,
+      count: data[0],
+      data: data[1],
+    });
+  } else {
+    res.json({
+      code: 200,
+      count: 0,
+      data,
+    });
+  }
+});
 router.get("/new_sort", async (req, res) => {
   let data = await mysql.sorts("commodity", req.query);
   if (typeof data == "string") {
@@ -606,6 +654,100 @@ router.get("/pro_delete", async (req, res) => {
       code: 400,
       meg: data,
     });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "删除成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `删除失败`,
+      });
+    }
+  }
+});
+router.get("/times", async (req, res) => {
+  let data = await mysql.times();
+  res.json({
+    code: 200,
+    data: data,
+  });
+});
+router.get("/times_add", async (req, res) => {
+  let data = await mysql.times_add(req.query);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data: data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "添加成功",
+      });
+    } else {
+      res.json({
+        code: 200,
+        data: `添加失败`,
+      });
+    }
+  }
+});
+router.get("/times_meg", async (req, res) => {
+  let data = await mysql.times_meg(req.query);
+  if (typeof data == "string") {
+    res,
+      json({
+        code: 400,
+        data: data,
+      });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `修改失败`,
+      });
+    }
+  }
+});
+router.get("/times_edit", async (req, res) => {
+  let data = await mysql.times_edit(req.query);
+  if (typeof data == "string") {
+    res,
+      json({
+        code: 400,
+        data: data,
+      });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: `修改失败`,
+      });
+    }
+  }
+});
+router.get("/times_del", async (req, res) => {
+  let data = await mysql.times_del(req.query);
+  if (typeof data == "string") {
+    res,
+      json({
+        code: 400,
+        data: data,
+      });
   } else {
     if (data.affectedRows > 0) {
       res.json({
