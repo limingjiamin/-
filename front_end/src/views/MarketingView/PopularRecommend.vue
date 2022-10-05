@@ -2,6 +2,16 @@
   <div class="common-layout">
     <el-container>
       <SearchView @refresh="refresh"></SearchView>
+      <AddView style="margin-top: 20px;">
+        <template #name>
+          <p>数据列表</p>
+        </template>
+        <template #btn>
+          <div>
+            <el-button color="#626aef" :dark="isDark" plain @click="select">选择商品</el-button>
+          </div>
+        </template>
+      </AddView>
       <el-main>
         <el-table :data="tableData" border style="width: 100%" @selection-change="xuan">
           <el-table-column type="selection" align="center" width="100" />
@@ -24,7 +34,6 @@
             </template>
           </el-table-column>
         </el-table>
-
         <el-dialog v-model="dialogVisible" title="设置排序" width="30%" align="left">
           <el-form-item label="排序 :" label-width="150px" style="width: 80%;font-size:25px ;">
             <el-input v-model="dia_from.sort" autocomplete="off" size=large style="font-size:18px ;" />
@@ -36,7 +45,6 @@
             </span>
           </template>
         </el-dialog>
-
         <el-dialog v-model="dialog" title="提示" width="30%" align="left">
           <div class="wei">
             <el-avatar src="http://icon.chrafz.com/uploads/151023/1-151023213T2X7.png" />
@@ -46,6 +54,30 @@
             <span class="dialog-footer">
               <el-button @click="dialog = false">取消</el-button>
               <el-button type="primary" @click="del">确定</el-button>
+            </span>
+          </template>
+        </el-dialog>
+        <el-dialog v-model="dialogs" title="选择商品" width="54%" align="left">
+          <el-input v-model="dia_search.search" placeholder="商品名称搜索" style="width: 300px;">
+            <template #append>
+              <el-button :icon="dia_search.Search" @click="sear(dia_search.search)"></el-button>
+            </template>
+          </el-input>
+          <el-table :data="dia_search.tableData" border style="width: 100%;margin-top: 30px;" @selection-change="xuanze"
+            :row-style="asd" :header-row-style="asd">
+            <el-table-column type="selection" align="center" width="100" />
+            <el-table-column prop="p_name" label="商品名称" align="center" width="380" />
+            <el-table-column prop="art_no" label="货号" align="center" width="200" />
+            <el-table-column prop="p_price" label="价格" align="center" width="189" />
+          </el-table>
+          <div style="display:flex; justify-content: flex-end; margin-top: 30px;">
+            <el-pagination background layout="prev, pager, next" :total="dia_search.page.page_count"
+              :page-size="dia_search.page.page_size" @current-change="handleCurrentChange" />
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogs = false">取消</el-button>
+              <el-button type="primary" @click="queding">确定</el-button>
             </span>
           </template>
         </el-dialog>
@@ -63,9 +95,11 @@
   import pag from "@/components/PagingView.vue";
   import batch from "@/components/BatchView.vue";
   import SearchView from "@/components/SearchView.vue";
+  import AddView from "@/components/AddView.vue";
+  import { Search } from '@element-plus/icons-vue'
   export default {
     name: "PopularRecommend",
-    components: { pag, batch, SearchView },
+    components: { pag, batch, SearchView, AddView },
     created() {
       this.page = this.$store.state.page;
       this.batch = this.$store.state.batch;
@@ -77,11 +111,29 @@
         tableData: [],
         dialogVisible: false,
         dialog: false,
+        dialogs: false,
         dia_from: "",
         del_id: 0,
         batch: {},
         state: 0,
         paylody: "",
+        dia_search: {
+          Search,//搜索图标
+          search: "",//搜索框的文本
+          tableData: [],//表格元素
+          page: {//分页
+            page_size: 5,
+            page_count: 0,
+            page_num: 1,
+          },
+          state: 0,//当前模式
+          pay: "",//搜索的参数
+          select: [],//选中的元素
+        },
+        asd: {
+          height: 60 + "px",
+          fontSize: 16 + "px",
+        },
       };
     },
     methods: {
@@ -188,16 +240,84 @@
         let arr = [];
         value.forEach(elem => arr.push(elem.sp_id));
         this.$store.state.batch.change_num = arr
+      },
+      select() {
+        this.dialogs = true;
+        this.dia_search.tableData.length = 0;
+        this.dia_search.search = "";
+        this.dia_search.state = 0;
+        this.dia_search.select.length = 0;
+        this.dia_search.page = {
+          page_size: 5,
+          page_count: 0,
+          page_num: 1,
+        };
+        this.https();
+      },
+      https() {
+        $http("/market/pro_product", this.dia_search.page, "POST").then(({ data, count }) => {
+          data.forEach(elem => elem.p_price = "￥: " + elem.p_price)
+          this.dia_search.page.page_count = count;
+          this.dia_search.tableData = data;
+        })
+      },
+      https_search() {
+        $http("/market/pro_select_search", {
+          page: JSON.stringify(this.dia_search.page),
+          search: this.dia_search.pay,
+        }).then(({ data, count }) => {
+          data.forEach(elem => elem.p_price = "￥: " + elem.p_price)
+          this.dia_search.page.page_count = count;
+          this.dia_search.tableData = data;
+        })
+      },
+      handleCurrentChange(value) {
+        this.dia_search.page.page_num = value;
+        if (this.dia_search.state) {
+          this.https_search();
+        } else {
+          this.https();
+        }
+      },
+      sear(pay) {
+        if (pay.trim().length > 0) {
+          this.dia_search.state = 1;
+          this.dia_search.page = {
+            page_size: 5,
+            page_count: 0,
+            page_num: 1,
+          };
+          this.dia_search.pay = pay;
+          this.https_search();
+        } else {
+          this.dia_search.state = 0;
+        }
+      },
+      queding() {
+        if (this.dia_search.select.length == 0) {
+          alert("请选择商品");
+        } else {
+          let data = confirm("是否进行添加操作");
+          if (data) {
+            // 发起ajax请求
+            // 退出
+            this.dialogs = false;
+          }
+        }
+      },
+      xuanze(value) {
+        // 保存选中的元素
+        this.dia_search.select = value;
       }
     },
     watch: {
       page: {
         handler: function () {
           if (this.state == 0) {
-              this.http(this.page);
-            } else {
-              this.search(this.page);
-            }
+            this.http(this.page);
+          } else {
+            this.search(this.page);
+          }
         },
         deep: true,
       },
