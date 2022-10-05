@@ -524,6 +524,54 @@ router.get("/seckill_select_search", async (req, res) => {
     });
   }
 });
+router.get("/new_select_search", async (req, res) => {
+  let data = await mysql.new_select_search(req.query);
+  if (data.length != 0) {
+    res.json({
+      code: 200,
+      count: data[0],
+      data: data[1],
+    });
+  } else {
+    res.json({
+      code: 200,
+      count: 0,
+      data,
+    });
+  }
+});
+router.get("/pro_select_search", async (req, res) => {
+  let data = await mysql.pro_select_search(req.query);
+  if (data.length != 0) {
+    res.json({
+      code: 200,
+      count: data[0],
+      data: data[1],
+    });
+  } else {
+    res.json({
+      code: 200,
+      count: 0,
+      data,
+    });
+  }
+});
+router.get("/special_select_search", async (req, res) => {
+  let data = await mysql.special_select_search(req.query);
+  if (data.length != 0) {
+    res.json({
+      code: 200,
+      count: data[0],
+      data: data[1],
+    });
+  } else {
+    res.json({
+      code: 200,
+      count: 0,
+      data,
+    });
+  }
+});
 router.get("/new_sort", async (req, res) => {
   let data = await mysql.sorts("commodity", req.query);
   if (typeof data == "string") {
@@ -762,4 +810,5 @@ router.get("/times_del", async (req, res) => {
     }
   }
 });
+
 module.exports = router;

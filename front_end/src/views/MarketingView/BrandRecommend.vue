@@ -60,13 +60,13 @@
           </template>
         </el-dialog>
 
-        <el-dialog v-model="dialogs" title="选择品牌" width="38%" align="left">
+        <el-dialog v-model="dialogs" title="添加品牌" width="38%" align="left">
           <el-input v-model="dia_search.search" placeholder="品牌名称搜索" style="width: 300px;">
             <template #append>
               <el-button :icon="dia_search.Search" @click="sear(dia_search.search)"></el-button>
             </template>
           </el-input>
-          <el-table :data="dia_search.tableData" border style="width: 100%;margin-top: 30px;" @selection-change="xuan"
+          <el-table :data="dia_search.tableData" border style="width: 100%;margin-top: 30px;" @selection-change="xuanze"
             :row-style="asd" :header-row-style="asd">
             <el-table-column type="selection" align="center" width="100" />
             <el-table-column prop="b_name" label="品牌名称" align="center" width="250" />
@@ -79,7 +79,7 @@
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="dialogs = false">取消</el-button>
-              <el-button type="primary">确定</el-button>
+              <el-button type="primary" @click="queding">确定</el-button>
             </span>
           </template>
         </el-dialog>
@@ -116,16 +116,17 @@
         dialogs: false,
         dia_from: "",
         dia_search: {
-          Search,
-          search: "",
-          tableData: [],
-          page: {
+          Search,//搜索图标
+          search: "",//搜索框的文本
+          tableData: [],//表格元素
+          page: {//分页
             page_size: 5,
             page_count: 0,
             page_num: 1,
           },
-          state: 0,
-          pay: ""
+          state: 0,//当前模式
+          pay: "",//搜索的参数
+          select: [],//选中的元素
         },
         del_id: 0,
         batch: {},
@@ -245,7 +246,15 @@
       },
       select() {
         this.dialogs = true;
-        this.dia_search.tableData.length = [];
+        this.dia_search.tableData.length = 0;
+        this.dia_search.search = "";
+        this.dia_search.state = 0;
+        this.dia_search.select.length = 0;
+        this.dia_search.page = {
+          page_size: 5,
+          page_count: 0,
+          page_num: 1,
+        };
         this.https();
       },
       https() {
@@ -257,7 +266,7 @@
       },
       https_search() {
         $http("/market/seckill_select_search", {
-          page: this.dia_search.page,
+          page: JSON.stringify(this.dia_search.page),
           search: this.dia_search.pay,
         }).then(({ data, count }) => {
           data.forEach(elem => elem.counts = "商品数量: " + elem.counts)
@@ -274,9 +283,34 @@
         }
       },
       sear(pay) {
-        this.dia_search.state = 1;
-        this.dia_search.pay = pay;
-        this.https_search(pay);
+        if (pay.trim().length > 0) {
+          this.dia_search.state = 1;
+          this.dia_search.page = {
+            page_size: 5,
+            page_count: 0,
+            page_num: 1,
+          };
+          this.dia_search.pay = pay;
+          this.https_search();
+        } else {
+          this.dia_search.state = 0;
+        }
+      },
+      queding() {
+        if (this.dia_search.select.length == 0) {
+          alert("请选择商品");
+        } else {
+          let data = confirm("是否进行添加操作");
+          if (data) {
+            // 发起ajax请求
+            // 退出
+            this.dialogs = false;
+          }
+        }
+      },
+      xuanze(value) {
+        // 保存选中的元素
+        this.dia_search.select = value;
       }
 
     },

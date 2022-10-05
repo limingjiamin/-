@@ -58,7 +58,7 @@ class marketing {
       parameter.page_num == undefined || parameter.page_num == ""
         ? 0
         : (parameter.page_num - 1) * parameter.page_size;
-    sql = `select id,p_id,p_name,recommend,sort from ${table}  where is_new='1' limit ${state},${count}`;
+    sql = `select id,p_id,p_name,recommend,sort,p_price,art_no from ${table}  where is_new='1' limit ${state},${count}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
@@ -75,7 +75,7 @@ class marketing {
       parameter.page_num == undefined || parameter.page_num == ""
         ? 0
         : (parameter.page_num - 1) * parameter.page_size;
-    sql = `select id,p_id,p_name,recommend,sort from ${table} where pro>2999 order by sell_num desc limit ${state},${count}`;
+    sql = `select id,p_id,p_name,recommend,sort,p_price,art_no from ${table} where pro>2999 order by sell_num desc limit ${state},${count}`;
     return new Promise((resolve) => {
       pool.query(sql, (err, result) => {
         if (err) throw err;
@@ -451,16 +451,107 @@ class marketing {
   }
   seckill_select_search(param) {
     let { page, search } = param;
+    page=JSON.parse(page);
     let count =
       page.page_size == undefined || page.page_size == ""
         ? 5
-        : parameter.page_size;
+        : page.page_size;
     let state =
       page.page_num == undefined || page.page_num == ""
         ? 0
         : (page.page_num - 1) * page.page_size;
     sql = `select id, b_name,count(1) counts from (select a.id,a.b_name from brand a left join commodity b on a.id=b.p_brand) c where b_name regexp '${search}' group by id limit ${state},${count};`;
     let sql2 = `select count(*) counts from brand where b_name regexp '${search}';`;
+    let arr = [];
+    return new Promise((resolve) => {
+      pool.query(sql2, (err, result) => {
+        if (err) throw err;
+        if (result[0].counts > 0) {
+          arr.push(result[0].counts);
+          pool.query(sql, (err, result) => {
+            if (err) throw err;
+            arr.push(result);
+            resolve(arr);
+          });
+        } else {
+          resolve(arr);
+        }
+      });
+    });
+  }
+  new_select_search(param) {
+    let { page, search } = param;
+    page=JSON.parse(page);
+    let count =
+      page.page_size == undefined || page.page_size == ""
+        ? 5
+        : page.page_size;
+    let state =
+      page.page_num == undefined || page.page_num == ""
+        ? 0
+        : (page.page_num - 1) * page.page_size;
+    sql = `select id,p_id,p_name,recommend,sort,p_price,art_no from commodity  where is_new='1' && p_name regexp '${search}' limit ${state},${count}`;
+    let sql2 = `select count(1) counts from commodity where is_new='1' && p_name regexp '${search}';`;
+    let arr = [];
+    return new Promise((resolve) => {
+      pool.query(sql2, (err, result) => {
+        if (err) throw err;
+        if (result[0].counts > 0) {
+          arr.push(result[0].counts);
+          pool.query(sql, (err, result) => {
+            if (err) throw err;
+            arr.push(result);
+            resolve(arr);
+          });
+        } else {
+          resolve(arr);
+        }
+      });
+    });
+  }
+  pro_select_search(param) {
+    let { page, search } = param;
+    page=JSON.parse(page);
+    let count =
+      page.page_size == undefined || page.page_size == ""
+        ? 5
+        : page.page_size;
+    let state =
+      page.page_num == undefined || page.page_num == ""
+        ? 0
+        : (page.page_num - 1) * page.page_size;
+    sql = `select id,p_name,p_price,art_no from commodity where pro>2999 && p_name regexp '${search}' order by sell_num desc limit ${state},${count}`;
+    let sql2 = `select count(1)  counts from commodity where pro>2999 && p_name regexp '${search}';`;
+    let arr = [];
+    return new Promise((resolve) => {
+      pool.query(sql2, (err, result) => {
+        if (err) throw err;
+        if (result[0].counts > 0) {
+          arr.push(result[0].counts);
+          pool.query(sql, (err, result) => {
+            if (err) throw err;
+            arr.push(result);
+            resolve(arr);
+          });
+        } else {
+          resolve(arr);
+        }
+      });
+    });
+  }
+  special_select_search(param) {
+    let { page, search } = param;
+    page=JSON.parse(page);
+    let count =
+      page.page_size == undefined || page.page_size == ""
+        ? 5
+        : page.page_size;
+    let state =
+      page.page_num == undefined || page.page_num == ""
+        ? 0
+        : (page.page_num - 1) * page.page_size;
+    sql = `select * from special where sp_titie regexp '${search}' limit ${state},${count}`;;
+    let sql2 = `select count(1) counts from special where sp_titie regexp '${search}';`;
     let arr = [];
     return new Promise((resolve) => {
       pool.query(sql2, (err, result) => {
