@@ -8,7 +8,7 @@
         </template>
         <template #btn>
           <div>
-            <el-button color="#f01af9" :dark="isDark" plain @click="add">添加</el-button>
+            <el-button color="#f01af9" :dark="isDark" plain @click="this.$router.push('coupon-update')">添加</el-button>
           </div>
         </template>
       </AddView>
@@ -59,7 +59,7 @@
   import AddView from "@/components/AddView.vue";
   export default {
     name: "CouponList",
-    components: { pag, SearchView,AddView },
+    components: { pag, SearchView, AddView },
     created() {
       this.page = this.$store.state.page;
       this.http({});
@@ -163,7 +163,7 @@
         this.$router.push({
           path: "coupon-update",
           query: {
-            id: pay.id,
+            id: pay.cou_id,
           },
         });
       },

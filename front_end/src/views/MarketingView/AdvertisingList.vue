@@ -2,6 +2,17 @@
   <div class="common-layout">
     <el-container>
       <SearchView @refresh="refresh"></SearchView>
+      <AddView style="margin-top: 20px;">
+        <template #name>
+          <p>数据列表</p>
+        </template>
+        <template #btn>
+          <div>
+            <el-button color="#626aef" :dark="isDark" plain @click="this.$router.push('advertis-update')">添加广告
+            </el-button>
+          </div>
+        </template>
+      </AddView>
       <el-main>
         <el-table :data="tableData" border style="width: 100%" @selection-change="xuan">
           <el-table-column type="selection" align="center" />
@@ -57,9 +68,10 @@
   import pag from "@/components/PagingView.vue";
   import batch from "@/components/BatchView.vue";
   import SearchView from "@/components/SearchView.vue";
+  import AddView from "@/components/AddView.vue";
   export default {
     name: "AdvertisingList",
-    components: { pag, batch, SearchView },
+    components: { pag, batch, SearchView, AddView },
     created() {
       this.page = this.$store.state.page;
       this.batch = this.$store.state.batch;

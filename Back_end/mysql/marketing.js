@@ -358,6 +358,17 @@ class marketing {
       });
     });
   }
+  coupon_select(table, param) {
+    let { id } = param;
+    if (id == undefined || id == "") return "请输入id";
+    sql = `select *from ${table} where cou_id=${id}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   times() {
     sql = "select * from seclill_time";
     return new Promise((resolve) => {
@@ -451,11 +462,9 @@ class marketing {
   }
   seckill_select_search(param) {
     let { page, search } = param;
-    page=JSON.parse(page);
+    page = JSON.parse(page);
     let count =
-      page.page_size == undefined || page.page_size == ""
-        ? 5
-        : page.page_size;
+      page.page_size == undefined || page.page_size == "" ? 5 : page.page_size;
     let state =
       page.page_num == undefined || page.page_num == ""
         ? 0
@@ -481,11 +490,9 @@ class marketing {
   }
   new_select_search(param) {
     let { page, search } = param;
-    page=JSON.parse(page);
+    page = JSON.parse(page);
     let count =
-      page.page_size == undefined || page.page_size == ""
-        ? 5
-        : page.page_size;
+      page.page_size == undefined || page.page_size == "" ? 5 : page.page_size;
     let state =
       page.page_num == undefined || page.page_num == ""
         ? 0
@@ -511,11 +518,9 @@ class marketing {
   }
   pro_select_search(param) {
     let { page, search } = param;
-    page=JSON.parse(page);
+    page = JSON.parse(page);
     let count =
-      page.page_size == undefined || page.page_size == ""
-        ? 5
-        : page.page_size;
+      page.page_size == undefined || page.page_size == "" ? 5 : page.page_size;
     let state =
       page.page_num == undefined || page.page_num == ""
         ? 0
@@ -541,16 +546,14 @@ class marketing {
   }
   special_select_search(param) {
     let { page, search } = param;
-    page=JSON.parse(page);
+    page = JSON.parse(page);
     let count =
-      page.page_size == undefined || page.page_size == ""
-        ? 5
-        : page.page_size;
+      page.page_size == undefined || page.page_size == "" ? 5 : page.page_size;
     let state =
       page.page_num == undefined || page.page_num == ""
         ? 0
         : (page.page_num - 1) * page.page_size;
-    sql = `select * from special where sp_titie regexp '${search}' limit ${state},${count}`;;
+    sql = `select * from special where sp_titie regexp '${search}' limit ${state},${count}`;
     let sql2 = `select count(1) counts from special where sp_titie regexp '${search}';`;
     let arr = [];
     return new Promise((resolve) => {
@@ -566,6 +569,91 @@ class marketing {
         } else {
           resolve(arr);
         }
+      });
+    });
+  }
+  advertis_update(param) {
+    let { ad_id } = param;
+    let str = "";
+    if (!ad_id) return "请输入广告的ad_id";
+    for (let key in param) {
+      if (key == "ad_id") continue;
+      if (key == "e_time" || key == "s_time")
+        param[key] = param[key].slice(0, -5).replace("T", " ");
+      str += `${key}='${param[key]}',`;
+    }
+    if (!str.length) return "请输入正确的修改参数";
+    str = str.slice(0, -1);
+    sql = `update advertis set ${str} where ad_id="${ad_id}";`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  coupon_update(param) {
+    let { cou_id } = param;
+    let str = "";
+    if (!cou_id) return "请输入广告的cou_id";
+    for (let key in param) {
+      if (key == "cou_id") continue;
+      if (key == "e_time" || key == "s_time")
+        param[key] = param[key].slice(0, -5).replace("T", " ");
+      str += `${key}='${param[key]}',`;
+    }
+    if (!str.length) return "请输入正确的修改参数";
+    str = str.slice(0, -1);
+    sql = `update coupon set ${str} where cou_id="${cou_id}";`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  advertis_add(param) {
+    let str = "";
+    for (let key in param) {
+      if (key == "ad_id") continue;
+      if (key == "e_time" || key == "s_time")
+        param[key] = param[key].slice(0, -5).replace("T", " ");
+      str += `${key}='${param[key]}',`;
+    }
+    if (!str.length) return "请输入正确的修改参数";
+    str = str.slice(0, -1);
+    sql = `insert into advertis set ${str}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  coupon_add(param) {
+    let str = "";
+    for (let key in param) {
+      if (key == "cou_id") continue;
+      if (key == "e_time" || key == "s_time")
+        param[key] = param[key].slice(0, -5).replace("T", " ");
+      str += `${key}='${param[key]}',`;
+    }
+    if (!str.length) return "请输入正确的修改参数";
+    str = str.slice(0, -1);
+    sql = `insert into coupon set ${str}`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
+  coupon_select_shop() {
+    sql = `select p_name value,art_no link from commodity limit 0,10;`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
       });
     });
   }

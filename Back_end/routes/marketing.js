@@ -1,3 +1,4 @@
+const { request } = require("express");
 var express = require("express");
 var router = express.Router();
 const mysql = require("../mysql/marketing.js");
@@ -337,6 +338,20 @@ router.get("/advertis_select", async (req, res) => {
     });
   }
 });
+router.get("/coupon_select", async (req, res) => {
+  let data = await mysql.coupon_select("coupon", req.query);
+  if (data.length == 0) {
+    res.json({
+      code: 400,
+      data: "数据库没有这么多的数据",
+    });
+  } else {
+    res.json({
+      code: 200,
+      data: data,
+    });
+  }
+});
 // 广告删除
 router.get("/advertis_delete", async (req, res) => {
   let data = await mysql.advertis_delete("advertis", req.query);
@@ -359,7 +374,93 @@ router.get("/advertis_delete", async (req, res) => {
     }
   }
 });
-
+// 广告修改
+router.post("/advertis_update", async (req, res) => {
+  let data = await mysql.advertis_update(req.body);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: "修改失败",
+      });
+    }
+  }
+});
+router.post("/coupon_update", async (req, res) => {
+  let data = await mysql.coupon_update(req.body);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: "修改失败",
+      });
+    }
+  }
+});
+router.post("/advertis_add", async (req, res) => {
+  let data = await mysql.advertis_add(req.body);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        ad_id: data.insertId,
+        data: "添加成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: "添加失败",
+      });
+    }
+  }
+});
+router.post("/coupon_add", async (req, res) => {
+  let data = await mysql.coupon_add(req.body);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        ad_id: data.insertId,
+        data: "添加成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: "添加失败",
+      });
+    }
+  }
+});
 //秒杀活动上下线
 router.get("/upper", async (req, res) => {
   let data = await mysql.upper("advertis", req.query);
@@ -809,6 +910,13 @@ router.get("/times_del", async (req, res) => {
       });
     }
   }
+});
+router.get("/coupon_select_shop", async (req, res) => {
+  let data = await mysql.coupon_select_shop(req.query);
+  res.json({
+    code: 200,
+    data: data,
+  });
 });
 
 module.exports = router;
