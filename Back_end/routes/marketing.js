@@ -1,8 +1,36 @@
-const { request } = require("express");
 var express = require("express");
 var router = express.Router();
 const mysql = require("../mysql/marketing.js");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const { resolve } = require("path");
 
+const subFolder = "images";
+const upload_folder = path.join("public", subFolder);
+const create_folder = (folder) => {
+  try {
+    fs.accessSync(upload_folder);
+  } catch (e) {
+    fs.mkdirSync(folder, { recursive: true });
+  }
+};
+create_folder(upload_folder);
+
+// 配置multer中的保存的目录及文件名称的规则
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, upload_folder);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${path.basename(file.originalname, ext)}-${Date.now()}${ext}`);
+  },
+});
+// 生成multer对象
+const upload = multer({
+  storage,
+});
 // 秒杀活动表格数据
 router.post("/seckill", async (req, res) => {
   let data = await mysql.seckill("seckill", req.body);
@@ -377,6 +405,29 @@ router.get("/advertis_delete", async (req, res) => {
 // 广告修改
 router.post("/advertis_update", async (req, res) => {
   let data = await mysql.advertis_update(req.body);
+  if (typeof data == "string") {
+    res.json({
+      code: 400,
+      data,
+    });
+  } else {
+    if (data.affectedRows > 0) {
+      res.json({
+        code: 200,
+        data: "修改成功",
+      });
+    } else {
+      res.json({
+        code: 400,
+        data: "修改失败",
+      });
+    }
+  }
+});
+router.post("/advertis_update_img", upload.single("haha"), async (req, res) => {
+  req.body.ad_img = req.body.ad_img || "";
+  req.body.ad_img = "http://localhost:3000/images/" + req.file.filename;
+  let data = await mysql.advertis_update_img(req.body);
   if (typeof data == "string") {
     res.json({
       code: 400,

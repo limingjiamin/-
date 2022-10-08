@@ -592,6 +592,17 @@ class marketing {
       });
     });
   }
+  advertis_update_img(param) {
+    let { ad_id ,ad_img} = param;
+    if (!ad_id) return "请输入广告的ad_id";
+    sql = `update advertis set ad_img='${ad_img}' where ad_id="${ad_id}";`;
+    return new Promise((resolve) => {
+      pool.query(sql, (err, result) => {
+        if (err) throw err;
+        resolve(result);
+      });
+    });
+  }
   coupon_update(param) {
     let { cou_id } = param;
     let str = "";

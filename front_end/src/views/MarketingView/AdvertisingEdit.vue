@@ -25,7 +25,7 @@
       <el-form-item label="广告图片 : ">
         <el-upload ref="upload" v-model:file-list="fileList" :limit="1" style="width: 600px;" class="upload-demo"
           :auto-upload="false" :on-exceed="handleExceed" list-type="picture" :before-upload="beforeAvatarUpload"
-          action="http://127.0.0.1:8080/upload">
+          action="http://127.0.0.1:3000/market/advertis_update_img" name="haha" :data="form">
           <el-button type="primary">点击上传</el-button>
           <template #tip>
             <div class="el-upload__tip">
@@ -123,7 +123,6 @@
     formEl.validate((valid) => {
       if (valid) {
         let obj = Object.assign({}, form.value);
-        obj.ad_img = obj.ad_img ? fileList.value[0].url : ""
         // 处理当前的form表单数据, 又是否为空的存在
         for (let key in obj) {
           if (obj[key as keyof typeof obj] == from.value[key as keyof typeof obj]) {
@@ -132,23 +131,24 @@
             }
           }
         }
+        upload.value!.submit()
         // 判断当前是添加还是修改
-        if ($route.query.id) {
-          // 发起修改的ajax请求
-          $http("/market/advertis_update", obj, "POST").then(({ data }) => {
-            alert(data);
-            from.value = JSON.parse(JSON.stringify(form.value));
-          })
-        } else {
-          // 发起添加的ajax请求
-          $http("/market/advertis_add", obj, "POST").then((data) => {
-            alert(data.data);
-            $router.push({
-              path: "advertis-update",
-              query: { id: data.ad_id },
-            })
-          })
-        }
+         if ($route.query.id) {
+           // 发起修改的ajax请求
+           $http("/market/advertis_update", obj, "POST").then(({ data }) => {
+             alert(data);
+             from.value = JSON.parse(JSON.stringify(form.value));
+           })
+         } else {
+           // 发起添加的ajax请求
+           $http("/market/advertis_add", obj, "POST").then((data) => {
+             alert(data.data);
+             $router.push({
+               path: "advertis-update",
+               query: { id: data.ad_id },
+             })
+           })
+         }
 
       } else {
         alert('出错了!主人,请主人在自己检查下哦')
