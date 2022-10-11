@@ -1,0 +1,36 @@
+						 	公开模块
+
+导航栏请求              	/navigation     			(请求类型 :get         参数：null  )；
+
+批量数据请求          	/batch              			(请求类型 :post       参数：null  )；
+
+							营销模块
+
+秒杀 _表格数据请求	         /market/seckill      			 (请求类型 :post      参数：[  pag_num (页码)  , pag_count (每页多少)  ]   非必传
+ 
+							订单模块
+
+列表_ 表格数据请求         /order/order_list    			(请求类型 :get         参数：[  pag_num (页码)  , pag_count (每页多少)  ]   非必传
+
+列表_ 查看订单               /order/order_view   			(请求类型 :get         参数：[ id （唯一标识） ]   必传
+
+列表_ 删除订单               /order/order_delete  		(请求类型 :get         参数：[ id （唯一标识） ]   必传
+
+列表_ 订单发货               /order/deliver_goods_edit          (请求类型 :post       参数：[ id ,  delivery(配送方式),   logistics ( 物流单号) ]      必传     
+
+列表 _订单设置               /order/order_setting                   (请求类型 :post       参数：[ seckill_order (秒杀未付款时间) ，normal_order (正常未付款自动关闭订单时间)
+                                                                                                                                   delivery_time (未发货超时的时间), close_transaction (自动结束交易超时的时间)
+                                                                                                                                   praise (自动五星好评时间)   必传
+
+退货申请                        /order/return_application           (请求类型 :get         参数：[  pag_num (页码)  , pag_count (每页多少)  ]   非必传
+
+退货申请详情        	       /order/return_application_details        (请求类型 :get         参数：[ id （唯一标识） ]   必传
+
+退货原因设置                 /order/return_reason                   (请求类型 :get         参数：[  pag_num (页码)  , pag_count (每页多少)  ]   非必传
+
+退货原因编辑                 /order/return_reason_edit           (请求类型 :post       参数：[  reason (原因类型)  , sort (排序) ,status( 状态) ,  id （唯一标识）]   必传
+
+退货原因删除                 /order/return_reason_delete       (请求类型 :get         参数：[  id （唯一标识） ]   必传
+
+添加退货原因                /order/return_reason_add            (请求类型 :post       参数：[   reason (原因类型)  , sort (排序) ,status( 状态) ,  id （唯一标识） ]   必传
+
